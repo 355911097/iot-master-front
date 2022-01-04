@@ -52,17 +52,18 @@
       </div>
     </nz-header>
     <nz-content>
+      <router-outlet></router-outlet>
 
 <!--      <app-tabs></app-tabs>-->
 
-      <nz-tabset nzLinkRouter (nzClose)="closeTab($event)">
-        <nz-tab *ngFor="let tab of tabs" nzClosable>
-          <a *nzTabLink nz-tab-link [routerLink]="[tab]" [queryParams]="tab.query" queryParamsHandling="merge">
-            Default
-          </a>
-          Default.
-        </nz-tab>
-      </nz-tabset>
+<!--      <nz-tabset nzLinkRouter nzType="editable-card" nzHideAdd (nzClose)="closeTab($event)">-->
+<!--        <nz-tab *ngFor="let tab of tabs" nzClosable>-->
+<!--          <a *nzTabLink nz-tab-link [routerLink]="[tab]" [queryParams]="tab.query" queryParamsHandling="merge">-->
+<!--            Default-->
+<!--          </a>-->
+<!--          Default.-->
+<!--        </nz-tab>-->
+<!--      </nz-tabset>-->
 
     </nz-content>
   </nz-layout>

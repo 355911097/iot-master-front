@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import {AdminComponent} from "../admin.component";
 
 @Component({
   selector: 'app-dash',
@@ -7,7 +8,7 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashComponent implements OnInit {
 
-  constructor() {
+  constructor(admin: AdminComponent) {
 
   }
 
