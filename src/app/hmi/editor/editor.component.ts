@@ -67,7 +67,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // @ts-ignore
     let canvas = SVG().addTo('#canvas').size("100%", "100%");
-    canvas.rect(40,40).fill('#f0f').move(40,40);
+    let rect = canvas.rect(40,40).fill('#f0f').move(40,40);
+    //rect.node
 
   }
 
