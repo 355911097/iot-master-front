@@ -6,31 +6,40 @@ export interface HmiPropertyItem {
   type: string | 'switch' | 'number' | 'text' | 'color' | 'date' | 'time' | 'datetime' | 'font' | 'fontsize'
   min?: number
   max?: number
-  default: boolean | number | string
+  default?: boolean | number | string
 
   [prop: string]: any
 }
 
 export interface HmiComponent {
-  id: string
+  uuid: string
   icon: string //svg png ...
-  type: string | 'basic' | 'svg' | 'object'
-  //interface: string // line polyline polygon circle ellipse rect text image | nested | foreignObject
-
-  template: string
-
   name: string
 
+  type: string | 'basic' | 'control' | 'object'
+  //line polyline polygon circle ellipse rect text image
+  //svg->nested 组件
+  //object->foreignObject 图表组件等
+  template?: string
+
+  [prop: string]: any
+
+  //配置项
   properties?: Array<HmiPropertyItem>
 
-  factory?(svg: Svg): Element
 
-  setup(props?: any): void
+  //绘制
+  draw?(container: Svg): Element
 
-  update(values: any): void
+  //修改
+  edit?(container: Svg, element: Element): void
 
-  draw?(): void
-  edit?(): void
+  //写入配置
+  setup(element: Element, properties: any): void
+
+  //更新数据
+  update(element: Element, values: any): void
+
 }
 
 export interface HmiViewItem {
