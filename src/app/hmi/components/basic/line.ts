@@ -1,4 +1,4 @@
-import {Element, Svg} from "@svgdotjs/svg.js";
+import {Element, SVG, Svg} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
 
 export let Line: HmiComponent = {
@@ -9,8 +9,13 @@ export let Line: HmiComponent = {
 
   draw: function (container: Svg): Element {
     //size(w,h) ???
-    container.on('click.draw-line', e=>{
-      container.off('click.draw-line')
+    container.on('click.draw', e=>{
+      //container.off('click.draw')
+
+    })
+
+    container.on('mousemove.draw', e=>{
+
     })
 
     return container.line();
