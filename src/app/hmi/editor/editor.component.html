@@ -32,15 +32,13 @@
       <nz-collapse>
         <nz-collapse-panel *ngFor="let cmp of components"
                            [nzHeader]="cmp.name" nzActive>
-          <img class="component" *ngFor="let c of cmp.components"
+          <img class="component" *ngFor="let c of cmp.components" (click)="draw(cmp)"
                [title]="c.name"
                [src]="c.image">
         </nz-collapse-panel>
       </nz-collapse>
     </nz-sider>
-    <nz-content id="canvas">
-      content
-    </nz-content>
+    <nz-content id="canvas"></nz-content>
     <nz-sider>
       属性配置
     </nz-sider>

@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {SVG} from '@svgdotjs/svg.js';
+import {Line, Svg, SVG} from '@svgdotjs/svg.js';
+import {HmiComponent} from "../hmi";
 
 @Component({
   selector: 'app-editor',
@@ -8,7 +9,8 @@ import {SVG} from '@svgdotjs/svg.js';
 })
 export class EditorComponent implements OnInit, AfterViewInit {
 
-  @ViewChild('canvas') canvas: HTMLElement | undefined;
+  @ViewChild('canvas') canvasElement: HTMLElement | undefined;
+  canvas: Svg | undefined;
 
   components = [
     {
@@ -66,10 +68,47 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     // @ts-ignore
-    let canvas = SVG().addTo('#canvas').size("100%", "100%");
-    let rect = canvas.rect(40,40).fill('#f0f').move(40,40);
+    this.canvas = SVG().addTo('#canvas').size("100%", "100%");
+    //let rect = this.canvas.rect(40,40).fill('#f0f').move(40,40);
     //rect.node
 
   }
 
+  draw(cmp: any) {
+    let line: Line;
+    let startX = 0;
+    let startY = 0;
+
+    // @ts-ignore
+    this.canvas.on('click.draw', e=>{
+      console.log('click.draw', e);
+
+      if (!line) {
+        // @ts-ignore
+        startX = e.offsetX;
+        // @ts-ignore
+        startY = e.offsetY;
+        // @ts-ignore
+        line = this.canvas.line(startX, startY, startX, startY).stroke("white")
+        return;
+      } else {
+        this.canvas?.off('click.draw')
+        this.canvas?.off('mousemove.draw')
+        // @ts-ignore
+        //line.move(e.x, e.y);
+      }
+
+    });
+
+    // @ts-ignore
+    this.canvas.on('mousemove.draw', e=>{
+      console.log('mousemove.draw', e)
+      if (!line) return;
+      // @ts-ignore
+      line.plot(startX, startY, e.offsetX, e.offsetY);
+
+      console.log(line)
+    });
+
+  }
 }
