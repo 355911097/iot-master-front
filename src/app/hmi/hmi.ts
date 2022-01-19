@@ -1,4 +1,4 @@
-import {Svg, Element} from "@svgdotjs/svg.js";
+import {Svg, Element, ElementAlias, Container} from "@svgdotjs/svg.js";
 
 export interface HmiPropertyItem {
   label: string
@@ -9,6 +9,10 @@ export interface HmiPropertyItem {
   default?: boolean | number | string
 
   [prop: string]: any
+}
+
+export interface HmiComponentFactory {
+  (container: Container): ElementAlias
 }
 
 export interface HmiComponent {
@@ -24,21 +28,23 @@ export interface HmiComponent {
 
   [prop: string]: any
 
+  factory: string | HmiComponentFactory
+
   //配置项
   properties?: Array<HmiPropertyItem>
 
 
   //绘制
-  draw?(container: Svg): Element
+  draw?(container: Container): void
 
   //修改
-  edit?(container: Svg, element: Element): void
+  edit?(element: ElementAlias, container: Container): void
 
   //写入配置
-  setup(element: Element, properties: any): void
+  setup(element: ElementAlias, properties: any): void
 
   //更新数据
-  update(element: Element, values: any): void
+  update(element: ElementAlias, values: any): void
 
 }
 

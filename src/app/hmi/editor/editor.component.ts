@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Line, Svg, SVG} from '@svgdotjs/svg.js';
 import {HmiComponent} from "../hmi";
+import {drawPoly, drawRect} from "../components/draw";
 
 @Component({
   selector: 'app-editor',
@@ -75,40 +76,12 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   draw(cmp: any) {
-    let line: Line;
-    let startX = 0;
-    let startY = 0;
 
     // @ts-ignore
-    this.canvas.on('click.draw', e=>{
-      console.log('click.draw', e);
-
-      if (!line) {
-        // @ts-ignore
-        startX = e.offsetX;
-        // @ts-ignore
-        startY = e.offsetY;
-        // @ts-ignore
-        line = this.canvas.line(startX, startY, startX, startY).stroke("white")
-        return;
-      } else {
-        this.canvas?.off('click.draw')
-        this.canvas?.off('mousemove.draw')
-        // @ts-ignore
-        //line.move(e.x, e.y);
-      }
-
-    });
+    //drawPoly(this.canvas)
 
     // @ts-ignore
-    this.canvas.on('mousemove.draw', e=>{
-      console.log('mousemove.draw', e)
-      if (!line) return;
-      // @ts-ignore
-      line.plot(startX, startY, e.offsetX, e.offsetY);
-
-      console.log(line)
-    });
+    drawRect(this.canvas)
 
   }
 }
