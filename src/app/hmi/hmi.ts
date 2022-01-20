@@ -17,14 +17,20 @@ export interface HmiComponentFactory {
 
 export interface HmiComponent {
   uuid: string
-  icon: string //svg png ...
+  icon: string //url: svg png jpg ...
   name: string
 
-  type: string | 'basic' | 'control' | 'object'
-  //line polyline polygon circle ellipse rect text image
-  //svg->nested 组件
-  //object->foreignObject 图表组件等
+  //分组（默认 扩展）
+  group?: string
+
+  //模板 svg
   template?: string
+
+  //线型（默认 false）
+  stroke?: boolean
+
+  //位置（默认 true）
+  position?: boolean
 
   [prop: string]: any
 
