@@ -67,11 +67,14 @@ export function drawRect(container: Container) {
     if (!rect) {
       startX = e.offsetX
       startY = e.offsetY
-      rect = container.rect().stroke("white").move(startX, startY)
+      rect = container.rect().stroke("white").fill('none').move(startX, startY)
 
       // @ts-ignore
       container.on('mousemove.draw', (e: MouseEvent) => {
-        rect.size(e.offsetX-startX, e.offsetY-startY)
+        let width = e.offsetX-startX;
+        let height = e.offsetY-startY;
+        if (width > 0 && height > 0)
+          rect.size(width, height)
       })
 
       //TODO on Esc:cancel

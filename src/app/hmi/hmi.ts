@@ -50,7 +50,7 @@ export interface HmiComponent {
   setup(element: ElementAlias, properties: any): void
 
   //更新数据
-  update(element: ElementAlias, values: any): void
+  update?(element: ElementAlias, values: any): void
 
 }
 

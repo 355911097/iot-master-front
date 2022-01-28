@@ -1,33 +1,24 @@
-import {Element, SVG, Svg} from "@svgdotjs/svg.js";
+import {Container, ElementAlias, Line} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
+import {drawLine} from "../draw";
 
-export let Line: HmiComponent = {
+export let LineComponent: HmiComponent = {
   uuid: "line",
   name: "直线",
-  icon: "",
-  type: "basic",
+  icon: "/assets/hmi/components/line.svg",
+  group: "基础组件",
 
-  draw: function (container: Svg): Element {
-    //size(w,h) ???
-    container.on('click.draw', e=>{
-      //container.off('click.draw')
-
-    })
-
-    container.on('mousemove.draw', e=>{
-
-    })
-
-    return container.line();
+  factory(container: Container) {
+    return container.line()
   },
 
-  setup(props?: any): void {
-
+  setup(element: ElementAlias, properties: any): void {
+    if (element instanceof Line) {
+      //element.stroke('')
+    }
   },
 
-  update(values: any): void {
-
-  },
+  draw: drawLine,
 
   edit() {
 
