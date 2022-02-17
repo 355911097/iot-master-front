@@ -4,6 +4,7 @@ export interface HmiPropertyItem {
   label: string
   name: string
   type: string | 'switch' | 'number' | 'text' | 'color' | 'date' | 'time' | 'datetime' | 'font' | 'fontsize'
+  unit?: string
   min?: number
   max?: number
   default?: boolean | number | string
@@ -20,24 +21,37 @@ export interface HmiComponent {
   icon: string //url: svg png jpg ...
   name: string
 
+  //类型，默认basic
+  type?: "basic" | "svg" | "object"
+
   //分组（默认 扩展）
   group?: string
 
   //模板 svg
-  template?: string
+  svg?: string
 
-  //线型（默认 false）
-  stroke?: boolean
+  //基础配置项
+  basicProperties?: {
+    //线型（默认 false）
+    stroke?: boolean,
 
-  //位置（默认 true）
-  position?: boolean
+    //填充（默认 false）
+    fill?: boolean,
+
+    //旋转（默认 true）
+    rotate?: boolean
+
+    //位置（默认 true）
+    position?: boolean
+  }
+
+  //扩展配置项
+  extraProperties?: Array<HmiPropertyItem>
 
   [prop: string]: any
 
   factory: string | HmiComponentFactory
 
-  //配置项
-  properties?: Array<HmiPropertyItem>
 
 
   //绘制

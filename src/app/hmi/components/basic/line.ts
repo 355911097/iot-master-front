@@ -12,10 +12,8 @@ export let LineComponent: HmiComponent = {
     return container.line()
   },
 
-  setup(element: ElementAlias, properties: any): void {
-    if (element instanceof Line) {
-      //element.stroke('')
-    }
+  setup(element: Line, properties: any): void {
+
   },
 
   draw: drawLine,
