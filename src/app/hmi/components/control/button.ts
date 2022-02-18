@@ -1,10 +1,8 @@
 import {HmiComponent} from "../../hmi";
-import {Svg, Element} from "@svgdotjs/svg.js";
-import {basicProperties, fontProperties} from "../properties";
+import {fontProperties} from "../properties";
 
 import icon from './button.svg';
-
-export let Button: HmiComponent;
+import {Svg} from "@svgdotjs/svg.js";
 
 const template = `
   <svg>
@@ -12,26 +10,23 @@ const template = `
   </svg>
   `;
 
-Button = {
+export let ButtonComponent: HmiComponent = {
   uuid: "button",
   name: '按钮',
-  type: "control",
-  icon, //svg
-  template,
+  group: '控件',
+  //icon: icon, //svg
+  icon: "/assets/hmi/components/button.svg",
+  //template,
 
-  properties: [
-    ...basicProperties,
-    ...fontProperties,
-  ],
-
+  extraProperties: [...fontProperties],
 
   //配置
-  setup(props?: any) {
+  setup(elem: Svg, props?: any) {
 
   },
 
   //更新数据
-  update(values: any) {
+  update(elem: Svg, values: any) {
 
   },
 

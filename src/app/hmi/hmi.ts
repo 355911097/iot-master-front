@@ -21,8 +21,8 @@ export interface HmiComponent {
   icon: string //url: svg png jpg ...
   name: string
 
-  //类型，默认basic
-  type?: "basic" | "svg" | "object"
+  //类型（默认 svg）
+  type?: "rect" | "circle" | "ellipse" | "line" | "polyline" | "polygon" | "image" | "path" | "text" | "svg" | "object"
 
   //分组（默认 扩展）
   group?: string
@@ -33,7 +33,7 @@ export interface HmiComponent {
   //基础配置项
   basicProperties?: {
     //线型（默认 false）
-    stroke?: boolean,
+    border?: boolean, //stroke
 
     //填充（默认 false）
     fill?: boolean,
@@ -50,22 +50,21 @@ export interface HmiComponent {
 
   [prop: string]: any
 
-  factory: string | HmiComponentFactory
-
-
-
-  //绘制
-  draw?(container: Container): void
-
-  //修改
-  edit?(element: ElementAlias, container: Container): void
-
   //写入配置
   setup(element: ElementAlias, properties: any): void
 
   //更新数据
   update?(element: ElementAlias, values: any): void
 
+}
+
+export function basicProperties() {
+  return {
+    line: false,
+    fill: false,
+    rotate: true,
+    position: true
+  }
 }
 
 export interface HmiViewItem {

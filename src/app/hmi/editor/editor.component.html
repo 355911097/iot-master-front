@@ -30,11 +30,11 @@
   <nz-layout>
     <nz-sider>
       <nz-collapse>
-        <nz-collapse-panel *ngFor="let cmp of components"
-                           [nzHeader]="cmp.name" nzActive>
-          <img class="component" *ngFor="let c of cmp.components" (click)="draw(cmp)"
+        <nz-collapse-panel *ngFor="let group of components"
+                           [nzHeader]="group.name" nzActive>
+          <img class="component" *ngFor="let c of group.components" (click)="draw(c)"
                [title]="c.name"
-               [src]="c.image">
+               [src]="c.icon">
         </nz-collapse-panel>
       </nz-collapse>
     </nz-sider>

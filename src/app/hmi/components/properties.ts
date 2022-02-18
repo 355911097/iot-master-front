@@ -21,6 +21,9 @@ export let positionProperties: Array<HmiPropertyItem> = [
     name: 'height',
     type: 'number',
   },
+];
+
+export let rotateProperties: Array<HmiPropertyItem> = [
   {
     label: '旋转角度',
     name: 'rotate',
@@ -28,8 +31,7 @@ export let positionProperties: Array<HmiPropertyItem> = [
   },
 ];
 
-
-export let basicProperties: Array<HmiPropertyItem> = [
+export let borderProperties: Array<HmiPropertyItem> = [
   {
     label: '颜色',
     name: 'color',
@@ -37,20 +39,17 @@ export let basicProperties: Array<HmiPropertyItem> = [
     default: '#fff'
   },
   {
-    label: '填充颜色',
-    name: 'fill',
-    type: 'color',
-    default: 'none'
-  },
-  {
     label: '边框',
     name: 'stroke',
     type: 'number',
     default: 'none'
   },
+];
+
+export let fillProperties: Array<HmiPropertyItem> = [
   {
-    label: '边框颜色',
-    name: 'stroke-color',
+    label: '填充颜色',
+    name: 'fill',
     type: 'color',
     default: 'none'
   },
@@ -62,12 +61,11 @@ export let fontProperties: Array<HmiPropertyItem> = [
     label: '字体',
     name: 'font',
     type: 'font',
-    default: ''
   },
   {
     label: '字号',
-    name: 'font',
-    type: 'number',
+    name: 'fontsize',
+    type: 'fontsize',
     default: 20
   },
   {

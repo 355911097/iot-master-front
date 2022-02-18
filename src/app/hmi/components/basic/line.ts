@@ -7,19 +7,9 @@ export let LineComponent: HmiComponent = {
   name: "直线",
   icon: "/assets/hmi/components/line.svg",
   group: "基础组件",
-
-  factory(container: Container) {
-    return container.line()
-  },
+  type: "line",
 
   setup(element: Line, properties: any): void {
 
-  },
-
-  draw: drawLine,
-
-  edit() {
-
   }
-
 }
