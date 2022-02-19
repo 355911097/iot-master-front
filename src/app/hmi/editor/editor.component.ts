@@ -1,6 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Svg, SVG} from '@svgdotjs/svg.js';
 import {components as ccc, drawComponent} from "../components/components";
+import {HmiComponent} from "../hmi";
 
 @Component({
   selector: 'app-editor',
@@ -29,14 +30,22 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   }
 
-  draw(cmp: any) {
+  draw(cmp: HmiComponent) {
 
     // @ts-ignore
     //drawPoly(this.canvas)
 
     // @ts-ignore
     //drawRect(this.canvas)
-    drawComponent(this.canvas, cmp);
+    let elem = drawComponent(this.canvas, cmp);
+    if (cmp.basicProperties?.border) {
+      // @ts-ignore
+      elem.stroke("white")
+    }
+    if (cmp.basicProperties?.fill) {
+      // @ts-ignore
+      elem.fill("none")
+    }
 
   }
 }

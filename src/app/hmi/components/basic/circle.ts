@@ -7,6 +7,7 @@ export let CircleComponent: HmiComponent = {
   icon: "/assets/hmi/components/circle.svg",
   group: "基础组件",
   type: "circle",
+  basicProperties: {border: true, fill: true},
 
   setup(element: Circle, properties: any): void {
 

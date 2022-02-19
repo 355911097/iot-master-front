@@ -8,6 +8,7 @@ export let LineComponent: HmiComponent = {
   icon: "/assets/hmi/components/line.svg",
   group: "基础组件",
   type: "line",
+  basicProperties: {border: true, fill: true},
 
   setup(element: Line, properties: any): void {
 

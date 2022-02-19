@@ -45,7 +45,7 @@ function createComponentElement(container: Container, type: string): ElementAlia
   let element: ElementAlias
   switch (type) {
     case "rect" :
-      element = container.line();
+      element = container.rect();
       break;
     case "circle" :
       element = container.circle();
@@ -146,6 +146,13 @@ export function editComponent(container: Container, component: HmiComponent) {
 }
 
 export function loadComponent(obj: HmiComponent) {
+  obj.basicProperties = Object.assign({}, {
+    border: false, //stroke
+    fill: false,
+    rotate: true,
+    position: true
+  }, obj.basicProperties);
+
   if (!obj.group)
     obj.group = "扩展";
   let group = componentsIndexGroup[obj.group]

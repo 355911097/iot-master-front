@@ -48,7 +48,7 @@ export function drawRect(container: Container, rect: Rect | Ellipse | Image | Sv
 
   // @ts-ignore
   container.on('click.draw', (e: MouseEvent) => {
-    if (!firstClick) {
+    if (firstClick) {
       firstClick = false
       startX = e.offsetX
       startY = e.offsetY
@@ -74,10 +74,11 @@ export function drawCircle(container: Container, circle: Circle) {
 
   // @ts-ignore
   container.on('click.draw', (e: MouseEvent) => {
-    if (!firstClick) {
+    if (firstClick) {
       firstClick = false
       startX = e.offsetX
       startY = e.offsetY
+      circle.center(startX, startY)
 
       // @ts-ignore
       container.on('mousemove.draw', (e: MouseEvent) => {
@@ -97,7 +98,7 @@ export function drawPoly(container: Container, poly: Polygon | Polyline) {
 
   // @ts-ignore
   container.on('click.draw', (e: MouseEvent) => {
-    if (!firstClick) {
+    if (firstClick) {
       firstClick = false
       poly.plot([e.offsetX, e.offsetY, e.offsetX, e.offsetY])
 

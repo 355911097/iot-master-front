@@ -7,6 +7,7 @@ export let RectComponent: HmiComponent = {
   icon: "/assets/hmi/components/rect.svg",
   group: "基础组件",
   type: "rect",
+  basicProperties: {border: true, fill: true},
 
   setup(element: Rect, properties: any): void {
 

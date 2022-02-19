@@ -7,6 +7,7 @@ export let EllipseComponent: HmiComponent = {
   icon: "/assets/hmi/components/ellipse.svg",
   group: "基础组件",
   type: "ellipse",
+  basicProperties: {border: true, fill: true},
 
   setup(element: Ellipse, properties: any): void {
 

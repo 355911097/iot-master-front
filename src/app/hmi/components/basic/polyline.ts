@@ -7,6 +7,7 @@ export let PolylineComponent: HmiComponent = {
   icon: "/assets/hmi/components/polyline.svg",
   group: "基础组件",
   type: "polyline",
+  basicProperties: {border: true, fill: true},
 
   setup(element: Polyline, properties: any): void {
 
