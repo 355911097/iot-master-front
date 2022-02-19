@@ -18,7 +18,7 @@ export let ButtonComponent: HmiComponent = {
   icon: "/assets/hmi/components/button.svg",
   //template,
 
-  extraProperties: [...fontProperties],
+  properties: [...fontProperties],
 
   //配置
   setup(elem: Svg, props?: any) {

@@ -40,7 +40,22 @@
     </nz-sider>
     <nz-content id="canvas"></nz-content>
     <nz-sider>
-      属性配置
+      属性配置/事件处理/数据绑定
+      <nz-table>
+        <thead>
+        <tr>
+          <th>属性</th>
+          <th>值</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let data of currentComponent?.properties">
+          <td>{{data.label}}</td>
+          <td>{{data.name}}</td>
+        </tr>
+        </tbody>
+      </nz-table>
+
     </nz-sider>
   </nz-layout>
 <!--  <nz-footer>footer</nz-footer>-->

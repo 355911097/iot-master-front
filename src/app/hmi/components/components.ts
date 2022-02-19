@@ -31,6 +31,7 @@ import {LineChartComponent} from "./chart/line";
 import {PieChartComponent} from "./chart/pie";
 import {RadarChartComponent} from "./chart/radar";
 import {MotorComponent} from "./industry/motor";
+import {borderProperties, fillProperties, positionProperties, rotateProperties} from "./properties";
 
 export let components: Array<ComponentGroup> = [];
 
@@ -146,12 +147,24 @@ export function editComponent(container: Container, component: HmiComponent) {
 }
 
 export function loadComponent(obj: HmiComponent) {
+  //obj.basicProperties = obj.basicProperties || {};
   obj.basicProperties = Object.assign({}, {
     border: false, //stroke
     fill: false,
     rotate: true,
     position: true
   }, obj.basicProperties);
+
+  //添加默认选项
+  obj.properties = obj.properties || [];
+  if (obj.basicProperties.border)
+    obj.properties.unshift(...borderProperties)
+  if (obj.basicProperties.fill)
+    obj.properties.unshift(...fillProperties)
+  if (obj.basicProperties.rotate)
+    obj.properties.unshift(...rotateProperties)
+  if (obj.basicProperties.position)
+    obj.properties.unshift(...positionProperties)
 
   if (!obj.group)
     obj.group = "扩展";

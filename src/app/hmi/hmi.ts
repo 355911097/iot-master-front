@@ -46,7 +46,7 @@ export interface HmiComponent {
   }
 
   //扩展配置项
-  extraProperties?: Array<HmiPropertyItem>
+  properties?: Array<HmiPropertyItem>
 
   [prop: string]: any
 

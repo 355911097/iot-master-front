@@ -10,7 +10,7 @@ export let TextComponent: HmiComponent = {
   type: "text",
   basicProperties: {border: true, fill: true},
 
-  extraProperties: [...fontProperties],
+  properties: [...fontProperties],
 
   setup(element: Text, properties: any): void {
 

@@ -13,6 +13,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvasElement: HTMLElement | undefined;
   canvas: Svg | undefined;
 
+  currentComponent: HmiComponent | undefined = undefined;
+
   components = ccc
 
   constructor() {
@@ -31,6 +33,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   draw(cmp: HmiComponent) {
+    this.currentComponent = cmp;
 
     // @ts-ignore
     //drawPoly(this.canvas)

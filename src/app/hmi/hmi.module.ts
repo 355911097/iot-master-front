@@ -8,6 +8,7 @@ import {NzCollapseModule} from "ng-zorro-antd/collapse";
 import {NzIconModule} from "ng-zorro-antd/icon";
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {IconsProviderModule} from "./icons-provider.module";
+import {NzTableModule} from "ng-zorro-antd/table";
 
 
 
@@ -23,6 +24,7 @@ import {IconsProviderModule} from "./icons-provider.module";
     NzCollapseModule,
     NzIconModule,
     NzDividerModule,
+    NzTableModule,
     IconsProviderModule
   ]
 })
