@@ -8,6 +8,7 @@ export let TextComponent: HmiComponent = {
   icon: "/assets/hmi/components/text.svg",
   group: "基础组件",
   type: "text",
+  basicProperties: {border: true, fill: true},
 
   extraProperties: [...fontProperties],
 
