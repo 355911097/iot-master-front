@@ -1,4 +1,3 @@
-import {Polyline} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
 
 export let PipeComponent: HmiComponent = {
@@ -8,7 +7,7 @@ export let PipeComponent: HmiComponent = {
   group: "工业",
   type: "polyline",
 
-  setup(elem: Polyline, props: any): void {
+  setup(props: any): void {
 
   }
 }

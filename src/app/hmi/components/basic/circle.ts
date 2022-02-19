@@ -1,4 +1,3 @@
-import {Circle} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
 
 export let CircleComponent: HmiComponent = {
@@ -9,7 +8,7 @@ export let CircleComponent: HmiComponent = {
   type: "circle",
   basicProperties: {border: true, fill: true},
 
-  setup(element: Circle, properties: any): void {
+  setup(properties: any): void {
 
   }
 }

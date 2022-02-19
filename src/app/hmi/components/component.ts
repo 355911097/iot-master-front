@@ -31,14 +31,16 @@ import {PieChartComponent} from "./chart/pie";
 import {RadarChartComponent} from "./chart/radar";
 import {borderProperties, fillProperties, positionProperties, rotateProperties} from "./properties";
 
-export let COMPONENTS: Array<ComponentGroup> = [];
+export let GroupedComponents: Array<Group> = [];
+export let IndexedComponents: { [name: string]: HmiComponent } = {}
 
-export interface ComponentGroup {
+export let indexedGroupComponents: { [name: string]: Array<HmiComponent> } = {}
+
+export interface Group {
   name: string,
   components: Array<HmiComponent>
 }
 
-export let componentsIndexGroup: { [name: string]: Array<HmiComponent> } = {}
 
 export function loadComponent(obj: HmiComponent) {
   //obj.basicProperties = obj.basicProperties || {};
@@ -48,6 +50,9 @@ export function loadComponent(obj: HmiComponent) {
     rotate: true,
     position: true
   }, obj.basicProperties);
+
+  //if (IndexedComponents.hasOwnProperty(obj.uuid))
+  IndexedComponents[obj.uuid] = obj;
 
   //添加默认选项
   obj.properties = obj.properties || [];
@@ -62,10 +67,10 @@ export function loadComponent(obj: HmiComponent) {
 
   if (!obj.group)
     obj.group = "扩展";
-  let group = componentsIndexGroup[obj.group]
+  let group = indexedGroupComponents[obj.group]
   if (!group) {
-    group = componentsIndexGroup[obj.group] = [];
-    COMPONENTS.push({name: obj.group, components: group});
+    group = indexedGroupComponents[obj.group] = [];
+    GroupedComponents.push({name: obj.group, components: group});
   }
   group.push(obj)
 }

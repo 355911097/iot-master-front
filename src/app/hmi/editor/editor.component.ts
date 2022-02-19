@@ -1,7 +1,7 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
 import {Svg, SVG} from '@svgdotjs/svg.js';
-import {COMPONENTS} from "../components/component";
-import {HmiComponent} from "../hmi";
+import {GroupedComponents, IndexedComponents} from "../components/component";
+import {HmiComponent, HmiEntity} from "../hmi";
 import {DrawComponent} from "../components/draw";
 
 @Component({
@@ -11,12 +11,16 @@ import {DrawComponent} from "../components/draw";
 })
 export class EditorComponent implements OnInit, AfterViewInit {
 
+
   @ViewChild('canvas') canvasElement: HTMLElement | undefined;
-  canvas: Svg | undefined;
+  // @ts-ignore
+  canvas: Svg;
 
   currentComponent: HmiComponent | undefined = undefined;
 
-  components = COMPONENTS
+  groupedComponents = GroupedComponents
+
+  entities: Array<HmiEntity> = []
 
   constructor() {
   }
@@ -28,18 +32,16 @@ export class EditorComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // @ts-ignore
     this.canvas = SVG().addTo('#canvas').size("100%", "100%");
-    //let rect = this.canvas.rect(40,40).fill('#f0f').move(40,40);
-    //rect.node
+
+    this.entities.forEach(e => this.drawEntity(e))
+  }
+
+  drawEntity(en: HmiEntity) {
 
   }
 
   draw(cmp: HmiComponent) {
     this.currentComponent = cmp;
-
-    // @ts-ignore
-    //drawPoly(this.canvas)
-
-    // @t s-ignore
 
     let elem = DrawComponent(this.canvas, cmp);
 

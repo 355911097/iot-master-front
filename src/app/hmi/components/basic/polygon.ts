@@ -1,5 +1,4 @@
 import {HmiComponent} from "../../hmi";
-import {Polygon} from "@svgdotjs/svg.js";
 
 export let PolygonComponent: HmiComponent = {
   uuid: "polygon",
@@ -9,7 +8,7 @@ export let PolygonComponent: HmiComponent = {
   type: "polygon",
   basicProperties: {border: true, fill: true},
 
-  setup(element: Polygon, properties: any): void {
+  setup(properties: any): void {
 
   }
 }

@@ -1,4 +1,3 @@
-import {Line} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
 
 export let LineComponent: HmiComponent = {
@@ -9,7 +8,7 @@ export let LineComponent: HmiComponent = {
   type: "line",
   basicProperties: {border: true, fill: true},
 
-  setup(element: Line, properties: any): void {
+  setup(properties: any): void {
 
 
   }

@@ -1,4 +1,3 @@
-import {Image} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
 
 export let ImageComponent: HmiComponent = {
@@ -8,7 +7,7 @@ export let ImageComponent: HmiComponent = {
   group: "基础组件",
   type: "image",
 
-  setup(element: Image, properties: any): void {
+  setup(properties: any): void {
 
   }
 }

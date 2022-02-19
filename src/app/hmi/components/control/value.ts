@@ -1,4 +1,3 @@
-import {Text} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
 
 export let ValueComponent: HmiComponent = {
@@ -8,7 +7,7 @@ export let ValueComponent: HmiComponent = {
   group: "控件",
   type: "text",
 
-  setup(elem: Text, props: any): void {
-    elem.text(props.text || '0')
+  setup(props: any): void {
+    //elem.text(props.text || '0')
   }
 }

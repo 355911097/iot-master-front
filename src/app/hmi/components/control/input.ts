@@ -1,4 +1,3 @@
-import {ForeignObject} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
 
 export let InputComponent: HmiComponent = {
@@ -8,7 +7,7 @@ export let InputComponent: HmiComponent = {
   group: "控件",
   type: "object",
 
-  setup(elem: ForeignObject, props: any): void {
+  setup(props: any): void {
 
   }
 }

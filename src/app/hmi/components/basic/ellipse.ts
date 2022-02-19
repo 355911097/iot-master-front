@@ -1,4 +1,3 @@
-import {Ellipse} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
 
 export let EllipseComponent: HmiComponent = {
@@ -9,7 +8,7 @@ export let EllipseComponent: HmiComponent = {
   type: "ellipse",
   basicProperties: {border: true, fill: true},
 
-  setup(element: Ellipse, properties: any): void {
+  setup(properties: any): void {
 
   }
 }

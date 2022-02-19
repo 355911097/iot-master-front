@@ -129,8 +129,10 @@ function drawEllipse(container: Container, ellipse: Ellipse) {
       container.on('mousemove.draw', (e: MouseEvent) => {
         let width = e.offsetX - startX
         let height = e.offsetY - startY
-        ellipse.center(startX + width / 2, startY + height / 2).size(width, height)
-        outline.size(width, height)
+        if (width > 0 && height > 0) {
+          ellipse.center(startX + width / 2, startY + height / 2).size(width, height)
+          outline.size(width, height)
+        }
       })
     } else {
       outline.remove()
@@ -183,7 +185,7 @@ function drawPoly(container: Container, poly: Polygon | Polyline) {
 }
 
 
-function createElement(container: Container, type: string): ElementAlias {
+export function CreateElement(container: Container, type: string): ElementAlias {
   let element: ElementAlias
   switch (type) {
     case "rect" :
@@ -229,7 +231,7 @@ export function DrawComponent(container: Container, component: HmiComponent): El
   StopDraw(container)
 
   const type = component.type || "svg"
-  let elem = createElement(container, type)
+  let elem = CreateElement(container, type)
   switch (type) {
     case "rect" :
     case "image" :

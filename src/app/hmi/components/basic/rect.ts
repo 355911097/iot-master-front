@@ -1,5 +1,4 @@
 import {HmiComponent} from "../../hmi";
-import {Rect} from "@svgdotjs/svg.js";
 
 export let RectComponent: HmiComponent = {
   uuid: "rect",
@@ -9,7 +8,7 @@ export let RectComponent: HmiComponent = {
   type: "rect",
   basicProperties: {border: true, fill: true},
 
-  setup(element: Rect, properties: any): void {
+  setup(properties: any): void {
 
   }
 }

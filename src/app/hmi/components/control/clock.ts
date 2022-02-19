@@ -1,4 +1,3 @@
-import {Svg} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
 
 export let ClockComponent: HmiComponent = {
@@ -7,7 +6,7 @@ export let ClockComponent: HmiComponent = {
   icon: "/assets/hmi/components/clock.svg",
   group: "控件",
 
-  setup(elem: Svg, props: any): void {
+  setup(props: any): void {
 
   }
 }

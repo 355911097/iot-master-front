@@ -1,4 +1,3 @@
-import {Svg} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
 
 export let AlarmComponent: HmiComponent = {
@@ -7,7 +6,7 @@ export let AlarmComponent: HmiComponent = {
   icon: "/assets/hmi/components/alarm.svg",
   group: "工业",
 
-  setup(elem: Svg, props: any): void {
+  setup(props: any): void {
 
   }
 }

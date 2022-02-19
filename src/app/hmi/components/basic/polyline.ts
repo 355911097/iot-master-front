@@ -1,5 +1,4 @@
 import {HmiComponent} from "../../hmi";
-import {Polyline} from "@svgdotjs/svg.js";
 
 export let PolylineComponent: HmiComponent = {
   uuid: "polyline",
@@ -9,7 +8,7 @@ export let PolylineComponent: HmiComponent = {
   type: "polyline",
   basicProperties: {border: true, fill: true},
 
-  setup(element: Polyline, properties: any): void {
+  setup(properties: any): void {
 
   }
 }

@@ -1,5 +1,4 @@
 import {HmiComponent} from "../../hmi";
-import {Text} from "@svgdotjs/svg.js";
 import {fontProperties} from "../properties";
 
 export let TextComponent: HmiComponent = {
@@ -12,7 +11,7 @@ export let TextComponent: HmiComponent = {
 
   properties: [...fontProperties],
 
-  setup(element: Text, properties: any): void {
+  setup(properties: any): void {
 
   }
 }
