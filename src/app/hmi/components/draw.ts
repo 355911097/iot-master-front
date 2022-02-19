@@ -5,20 +5,21 @@ import {
   ElementAlias,
   Ellipse,
   ForeignObject, Image,
-  Line,
+  Line, Path,
   Polygon,
   Polyline,
   Rect,
-  Svg
+  Svg,
+  Text,
 } from "@svgdotjs/svg.js";
+import {HmiComponent} from "../hmi";
 
-
-export function stopDraw(container: Container) {
+export function StopDraw(container: Container) {
   container.off('click.draw')
   container.off('mousemove.draw')
 }
 
-export function drawLine(container: Container, line: Line) {
+function drawLine(container: Container, line: Line) {
   let startX = 0;
   let startY = 0;
   let firstClick = true;
@@ -29,18 +30,20 @@ export function drawLine(container: Container, line: Line) {
       firstClick = false
       startX = e.offsetX
       startY = e.offsetY
+      line.addTo(container)
+
       // @ts-ignore
       container.on('mousemove.draw', (e: MouseEvent) => {
         line.plot(startX, startY, e.offsetX, e.offsetY)
       })
     } else {
-      stopDraw(container)
+      StopDraw(container)
     }
   });
 }
 
 
-export function drawRect(container: Container, rect: Rect | Ellipse | Image | Svg | ForeignObject) {
+function drawRect(container: Container, rect: Rect | Ellipse | Image | Svg | ForeignObject) {
   //let rect: Rect;
   let startX = 0;
   let startY = 0;
@@ -52,7 +55,7 @@ export function drawRect(container: Container, rect: Rect | Ellipse | Image | Sv
       firstClick = false
       startX = e.offsetX
       startY = e.offsetY
-      rect.move(startX, startY)
+      rect.addTo(container).move(startX, startY)
 
       // @ts-ignore
       container.on('mousemove.draw', (e: MouseEvent) => {
@@ -62,12 +65,12 @@ export function drawRect(container: Container, rect: Rect | Ellipse | Image | Sv
           rect.size(width, height)
       })
     } else {
-      stopDraw(container)
+      StopDraw(container)
     }
   });
 }
 
-export function drawCircle(container: Container, circle: Circle) {
+function drawCircle(container: Container, circle: Circle) {
   let startX = 0;
   let startY = 0;
   let firstClick = true;
@@ -78,7 +81,7 @@ export function drawCircle(container: Container, circle: Circle) {
       firstClick = false
       startX = e.offsetX
       startY = e.offsetY
-      circle.center(startX, startY)
+      circle.addTo(container).center(startX, startY)
 
       // @ts-ignore
       container.on('mousemove.draw', (e: MouseEvent) => {
@@ -88,19 +91,46 @@ export function drawCircle(container: Container, circle: Circle) {
         circle.radius(r)
       })
     } else {
-      stopDraw(container)
+      StopDraw(container)
     }
   });
 }
 
-export function drawPoly(container: Container, poly: Polygon | Polyline) {
+
+function drawEllipse(container: Container, ellipse: Ellipse) {
+  let startX = 0;
+  let startY = 0;
   let firstClick = true;
 
   // @ts-ignore
   container.on('click.draw', (e: MouseEvent) => {
     if (firstClick) {
       firstClick = false
-      poly.plot([e.offsetX, e.offsetY, e.offsetX, e.offsetY])
+      startX = e.offsetX
+      startY = e.offsetY
+      ellipse.addTo(container).move(startX, startY)
+
+      // @ts-ignore
+      container.on('mousemove.draw', (e: MouseEvent) => {
+        let width = e.offsetX - startX
+        let height = e.offsetY - startY
+        ellipse.center(startX + width / 2, startY + height / 2).size(width, height)
+      })
+    } else {
+      StopDraw(container)
+    }
+  });
+}
+
+
+function drawPoly(container: Container, poly: Polygon | Polyline) {
+  let firstClick = true;
+
+  // @ts-ignore
+  container.on('click.draw', (e: MouseEvent) => {
+    if (firstClick) {
+      firstClick = false
+      poly.addTo(container).plot([e.offsetX, e.offsetY, e.offsetX, e.offsetY])
 
       // @ts-ignore
       container.on('mousemove.draw', (e: MouseEvent) => {
@@ -119,7 +149,7 @@ export function drawPoly(container: Container, poly: Polygon | Polyline) {
           poly.plot(arr)
 
           //line.draw('done');
-          stopDraw(container)
+          StopDraw(container)
 
           //off listener
           document.removeEventListener('keydown', onKeydown)
@@ -134,3 +164,85 @@ export function drawPoly(container: Container, poly: Polygon | Polyline) {
     }
   });
 }
+
+
+function createElement(container: Container, type: string): ElementAlias {
+  let element: ElementAlias
+  switch (type) {
+    case "rect" :
+      element = new Rect() // container.rect();
+      break;
+    case "circle" :
+      element = new Circle() // container.circle();
+      break;
+    case "ellipse" :
+      element = new Ellipse() // container.ellipse();
+      break;
+    case "line" :
+      element = new Line() // container.line();
+      break;
+    case "polyline" :
+      element = new Polyline() // container.polyline();
+      break;
+    case "polygon" :
+      element = new Polygon() // container.polygon();
+      break;
+    case "image" :
+      element = new Image() // container.image();
+      break;
+    case "path" :
+      element = new Path() // container.path();
+      break;
+    case "text" :
+      element = new Text().text("文本") // container.text("文本");
+      break;
+    case "svg" :
+      element = new Svg() // container.nested();
+      break;
+    case "object":
+      element = new ForeignObject() // container.foreignObject(0, 0);
+      break;
+    default:
+      throw new Error("不支持的控件类型：" + type)
+  }
+  return element;
+}
+
+export function DrawComponent(container: Container, component: HmiComponent): ElementAlias {
+  StopDraw(container)
+
+  const type = component.type || "svg"
+  let elem = createElement(container, type)
+  switch (type) {
+    case "rect" :
+    case "image" :
+    case "text" :
+    case "svg" :
+    case "object":
+      // @ts-ignore
+      drawRect(container, elem)
+      break
+    case "circle" :
+      // @ts-ignore
+      drawCircle(container, elem)
+      break
+    case "ellipse" :
+      // @ts-ignore
+      drawEllipse(container, elem)
+      break
+    case "line" :
+      // @ts-ignore
+      drawLine(container, elem)
+      break
+    case "polyline" :
+    case "polygon" :
+      // @ts-ignore
+      drawPoly(container, elem)
+      break
+    case "path" :
+    default:
+      throw new Error("不支持的控件类型：" + type)
+  }
+  return elem;
+}
+

@@ -1,6 +1,5 @@
-import {Container, ElementAlias, Line} from "@svgdotjs/svg.js";
+import {Line} from "@svgdotjs/svg.js";
 import {HmiComponent} from "../../hmi";
-import {drawLine} from "../draw";
 
 export let LineComponent: HmiComponent = {
   uuid: "line",
@@ -11,6 +10,7 @@ export let LineComponent: HmiComponent = {
   basicProperties: {border: true, fill: true},
 
   setup(element: Line, properties: any): void {
+
 
   }
 }
