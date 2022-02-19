@@ -1,8 +1,8 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {Svg, SVG} from '@svgdotjs/svg.js';
-import {GroupedComponents, IndexedComponents} from "../components/component";
-import {HmiComponent, HmiEntity} from "../hmi";
-import {DrawComponent} from "../components/draw";
+import {ElementAlias, Svg, SVG} from '@svgdotjs/svg.js';
+import {GetComponent, GroupedComponents} from "../components/component";
+import {CreateComponentObject, GetDefaultProperties, HmiComponent, HmiEntity} from "../hmi";
+import {CreateElement, DrawComponent} from "../components/draw";
 
 @Component({
   selector: 'app-editor',
@@ -33,27 +33,55 @@ export class EditorComponent implements OnInit, AfterViewInit {
     // @ts-ignore
     this.canvas = SVG().addTo('#canvas').size("100%", "100%");
 
-    this.entities.forEach(e => this.drawEntity(e))
+    this.entities.forEach(en => {
+      let cmp = GetComponent(en.component)
+      if (!cmp) return
+      en.element = CreateElement(this.canvas, cmp)
+      cmp.setup.call(en.$object, en.properties)
+    })
   }
 
-  drawEntity(en: HmiEntity) {
-
+  drawEntity(entity: HmiEntity) {
+    let cmp = GetComponent(entity.component)
+    if (!cmp) return
+    entity.element = CreateElement(this.canvas, cmp)
+    entity.$object = CreateComponentObject(cmp, entity.element)
+    cmp.setup.call(entity.$object, entity.properties)
   }
 
   draw(cmp: HmiComponent) {
     this.currentComponent = cmp;
 
-    let elem = DrawComponent(this.canvas, cmp);
+    let properties = GetDefaultProperties(cmp)
+    if (properties.hasOwnProperty('stroke'))
+      properties.stroke = "white"
+    if (properties.hasOwnProperty('color'))
+      properties.color = "none"
+
+    let element = DrawComponent(this.canvas, cmp);
+    let entity: HmiEntity = {
+        name: "",
+        component: cmp.uuid,
+        properties,
+        element,
+        $object: CreateComponentObject(cmp, element),
+    }
+
+
+
+    this.entities.push(entity)
+    cmp.setup.call(entity.$object, entity.properties)
+
 
     //TODO delete
-    if (cmp.basicProperties?.border) {
-      // @ts-ignore
-      elem.stroke("white")
-    }
-    if (cmp.basicProperties?.fill) {
-      // @ts-ignore
-      elem.fill("none")
-    }
+    // if (cmp.basicProperties?.border) {
+    //   // @ts-ignore
+    //   elem.stroke("white")
+    // }
+    // if (cmp.basicProperties?.fill) {
+    //   // @ts-ignore
+    //   elem.fill("none")
+    // }
 
   }
 }

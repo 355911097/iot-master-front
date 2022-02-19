@@ -46,7 +46,7 @@ export let borderProperties: Array<HmiPropertyItem> = [
   },
 ];
 
-export let fillProperties: Array<HmiPropertyItem> = [
+export let colorProperties: Array<HmiPropertyItem> = [
   {
     label: '填充颜色',
     name: 'fill',

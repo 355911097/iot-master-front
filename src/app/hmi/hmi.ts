@@ -32,7 +32,7 @@ export interface HmiComponent {
     border?: boolean, //stroke
 
     //填充（默认 false）
-    fill?: boolean,
+    color?: boolean,
 
     //旋转（默认 true）
     rotate?: boolean
@@ -65,11 +65,31 @@ export function basicProperties() {
   }
 }
 
+export function GetDefaultProperties(component: HmiComponent): any {
+  let obj: any = {};
+  component.properties?.forEach(p => {
+    if (p.hasOwnProperty('default'))
+      obj[p.name] = p.default
+  })
+  return obj;
+}
+
+export function CreateComponentObject(component: HmiComponent, element: ElementAlias): any {
+  let obj = component.data ? component.data() : {}
+  obj.__proto__ = {
+    //$name: entity.name,
+    $element: element
+  }
+  return obj
+}
+
 export interface HmiEntity {
   name: string
   component: string //uuid
-  properties: { [name: string]: any }
+  properties: any //{ [name: string]: any }
   element: ElementAlias
+
+  $object: any;
 
   //TODO
   //参数绑定

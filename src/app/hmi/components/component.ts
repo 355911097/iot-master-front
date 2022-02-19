@@ -1,4 +1,4 @@
-import {HmiComponent} from "../hmi";
+import {HmiComponent, HmiPropertyItem} from "../hmi";
 import {LineComponent} from "./basic/line";
 import {CircleComponent} from "./basic/circle";
 import {PolylineComponent} from "./basic/polyline";
@@ -29,41 +29,46 @@ import {GaugeChartComponent} from "./chart/gauge";
 import {LineChartComponent} from "./chart/line";
 import {PieChartComponent} from "./chart/pie";
 import {RadarChartComponent} from "./chart/radar";
-import {borderProperties, fillProperties, positionProperties, rotateProperties} from "./properties";
+import {borderProperties, colorProperties, positionProperties, rotateProperties} from "./properties";
 
 export let GroupedComponents: Array<Group> = [];
-export let IndexedComponents: { [name: string]: HmiComponent } = {}
 
-export let indexedGroupComponents: { [name: string]: Array<HmiComponent> } = {}
+let indexedComponents: { [name: string]: HmiComponent } = {}
+let indexedGroupComponents: { [name: string]: Array<HmiComponent> } = {}
 
 export interface Group {
   name: string,
   components: Array<HmiComponent>
 }
 
+export function GetComponent(id: string): HmiComponent {
+  return indexedComponents[id];
+}
 
-export function loadComponent(obj: HmiComponent) {
+export function LoadComponent(obj: HmiComponent) {
   //obj.basicProperties = obj.basicProperties || {};
   obj.basicProperties = Object.assign({}, {
     border: false, //stroke
-    fill: false,
+    color: false,
     rotate: true,
     position: true
   }, obj.basicProperties);
 
-  //if (IndexedComponents.hasOwnProperty(obj.uuid))
-  IndexedComponents[obj.uuid] = obj;
+  //if (indexedComponents.hasOwnProperty(obj.uuid))
+  indexedComponents[obj.uuid] = obj;
 
   //添加默认选项
-  obj.properties = obj.properties || [];
+  let props: Array<HmiPropertyItem> = [];
+  if (obj.basicProperties.color)
+    props.push(...colorProperties)
   if (obj.basicProperties.border)
-    obj.properties.unshift(...borderProperties)
-  if (obj.basicProperties.fill)
-    obj.properties.unshift(...fillProperties)
-  if (obj.basicProperties.rotate)
-    obj.properties.unshift(...rotateProperties)
+    props.push(...borderProperties)
   if (obj.basicProperties.position)
-    obj.properties.unshift(...positionProperties)
+    props.push(...positionProperties)
+  if (obj.basicProperties.rotate)
+    props.push(...rotateProperties)
+
+  obj.properties = props.concat(obj.properties || [])
 
   if (!obj.group)
     obj.group = "扩展";
@@ -86,6 +91,6 @@ let internalComponents = [
   //图表
   BarChartComponent, GaugeChartComponent, LineChartComponent, PieChartComponent, RadarChartComponent
 ]
-internalComponents.forEach(c => loadComponent(c))
+internalComponents.forEach(c => LoadComponent(c))
 //}
 

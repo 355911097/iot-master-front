@@ -6,9 +6,14 @@ export let EllipseComponent: HmiComponent = {
   icon: "/assets/hmi/components/ellipse.svg",
   group: "基础组件",
   type: "ellipse",
-  basicProperties: {border: true, fill: true},
+  basicProperties: {border: true, color: true},
 
   setup(properties: any): void {
-
+    if (properties.stroke) { // @ts-ignore
+      this.$element.stroke(properties.stroke)
+    }
+    if (properties.color) { // @ts-ignore
+      this.$element.fill(properties.color)
+    }
   }
 }

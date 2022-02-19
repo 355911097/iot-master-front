@@ -185,9 +185,10 @@ function drawPoly(container: Container, poly: Polygon | Polyline) {
 }
 
 
-export function CreateElement(container: Container, type: string): ElementAlias {
+export function CreateElement(container: Container, component: HmiComponent): ElementAlias {
   let element: ElementAlias
-  switch (type) {
+  const type = component.type || "svg"
+  switch (component.type) {
     case "rect" :
       element = new Rect() // container.rect();
       break;
@@ -230,8 +231,8 @@ export function CreateElement(container: Container, type: string): ElementAlias 
 export function DrawComponent(container: Container, component: HmiComponent): ElementAlias {
   StopDraw(container)
 
+  let elem = CreateElement(container, component)
   const type = component.type || "svg"
-  let elem = CreateElement(container, type)
   switch (type) {
     case "rect" :
     case "image" :
