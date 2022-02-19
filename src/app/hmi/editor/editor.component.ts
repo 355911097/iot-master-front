@@ -22,6 +22,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   entities: Array<HmiEntity> = []
 
+  color = "none"
+  stroke = "white"
+
   constructor() {
   }
 
@@ -54,9 +57,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
     let properties = GetDefaultProperties(cmp)
     if (properties.hasOwnProperty('stroke'))
-      properties.stroke = "white"
+      properties.stroke = this.stroke // "white"
     if (properties.hasOwnProperty('color'))
-      properties.color = "none"
+      properties.color = this.color // "none"
 
     let element = DrawComponent(this.canvas, cmp);
     let entity: HmiEntity = {
@@ -66,7 +69,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
         element,
         $object: CreateComponentObject(cmp, element),
     }
-
 
 
     this.entities.push(entity)

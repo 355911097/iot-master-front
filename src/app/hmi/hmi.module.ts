@@ -9,6 +9,7 @@ import {NzIconModule} from "ng-zorro-antd/icon";
 import {NzDividerModule} from "ng-zorro-antd/divider";
 import {IconsProviderModule} from "./icons-provider.module";
 import {NzTableModule} from "ng-zorro-antd/table";
+import {ColorPickerModule} from "ngx-color-picker";
 
 
 
@@ -25,7 +26,8 @@ import {NzTableModule} from "ng-zorro-antd/table";
     NzIconModule,
     NzDividerModule,
     NzTableModule,
-    IconsProviderModule
+    IconsProviderModule,
+    ColorPickerModule,
   ]
 })
 export class HmiModule { }

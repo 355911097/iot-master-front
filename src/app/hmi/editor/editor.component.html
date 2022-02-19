@@ -60,11 +60,15 @@
   </nz-layout>
   <nz-footer>
     填充色
+    <input [(colorPicker)]="color" [style.background]="color"/>
+    <a (click)="color='none'">无填充</a>
+
     边框色
+    <input [(colorPicker)]="stroke" [style.background]="stroke" cpPresetLabel="123"/>
+    <a (click)="stroke='none'">无边框</a>
+
     边框大小
     边框线形
-
-    各种色
 
   </nz-footer>
 </nz-layout>
