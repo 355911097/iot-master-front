@@ -49,6 +49,8 @@ function drawRect(container: Container, rect: Rect | Ellipse | Image | Svg | For
   let startY = 0;
   let firstClick = true;
 
+  let outline = new Rect();
+
   // @ts-ignore
   container.on('click.draw', (e: MouseEvent) => {
     if (firstClick) {
@@ -57,14 +59,21 @@ function drawRect(container: Container, rect: Rect | Ellipse | Image | Svg | For
       startY = e.offsetY
       rect.addTo(container).move(startX, startY)
 
+      outline.addTo(container).move(startX, startY).stroke({width:1,color:'#7be',dasharray:"6 2",dashoffset:8}).fill("none")
+      // @ts-ignore
+      outline.animate().ease('-').stroke({dashoffset:0}).loop();
+
       // @ts-ignore
       container.on('mousemove.draw', (e: MouseEvent) => {
         let width = e.offsetX - startX;
         let height = e.offsetY - startY;
-        if (width > 0 && height > 0)
+        if (width > 0 && height > 0) {
           rect.size(width, height)
+          outline.size(width, height)
+        }
       })
     } else {
+      outline.remove()
       StopDraw(container)
     }
   });
@@ -102,6 +111,8 @@ function drawEllipse(container: Container, ellipse: Ellipse) {
   let startY = 0;
   let firstClick = true;
 
+  let outline = new Rect();
+
   // @ts-ignore
   container.on('click.draw', (e: MouseEvent) => {
     if (firstClick) {
@@ -110,13 +121,19 @@ function drawEllipse(container: Container, ellipse: Ellipse) {
       startY = e.offsetY
       ellipse.addTo(container).move(startX, startY)
 
+      outline.addTo(container).move(startX, startY).stroke({width:1,color:'#7be',dasharray:"6 2",dashoffset:8}).fill("none")
+      // @ts-ignore
+      outline.animate().ease('-').stroke({dashoffset:0}).loop();
+
       // @ts-ignore
       container.on('mousemove.draw', (e: MouseEvent) => {
         let width = e.offsetX - startX
         let height = e.offsetY - startY
         ellipse.center(startX + width / 2, startY + height / 2).size(width, height)
+        outline.size(width, height)
       })
     } else {
+      outline.remove()
       StopDraw(container)
     }
   });
@@ -188,7 +205,7 @@ function createElement(container: Container, type: string): ElementAlias {
       element = new Polygon() // container.polygon();
       break;
     case "image" :
-      element = new Image() // container.image();
+      element = new Image().load("/assets/hmi/components/image.svg") // container.image();
       break;
     case "path" :
       element = new Path() // container.path();
