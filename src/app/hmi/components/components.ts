@@ -1,5 +1,5 @@
 import {HmiComponent} from "../hmi";
-import {Container, ElementAlias, Line} from "@svgdotjs/svg.js";
+import {Container, ElementAlias} from "@svgdotjs/svg.js";
 import {LineComponent} from "./basic/line";
 import {drawCircle, drawLine, drawPoly, drawRect} from "./draw";
 import {editPoints, editRect} from "./edit";
