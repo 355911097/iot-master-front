@@ -19,7 +19,7 @@ export function StopDraw(container: Container) {
   container.off('mousemove.draw')
 }
 
-function drawLine(container: Container, line: Line) {
+function drawLine(container: Container, line: Line, properties: any) {
   let startX = 0;
   let startY = 0;
   let firstClick = true;
@@ -38,12 +38,18 @@ function drawLine(container: Container, line: Line) {
       })
     } else {
       StopDraw(container)
+      //properties.points = line.plot().toArray()
+      let points = line.plot().toArray()
+      properties.x1 = points[0]
+      properties.y1 = points[1]
+      properties.x2 = points[2]
+      properties.y2 = points[3]
     }
   });
 }
 
 
-function drawRect(container: Container, rect: Rect | Ellipse | Image | Svg | ForeignObject) {
+function drawRect(container: Container, rect: Rect | Ellipse | Image | Svg | ForeignObject, properties: any) {
   //let rect: Rect;
   let startX = 0;
   let startY = 0;
@@ -75,14 +81,19 @@ function drawRect(container: Container, rect: Rect | Ellipse | Image | Svg | For
     } else {
       outline.remove()
       StopDraw(container)
+      properties.x = rect.x()
+      properties.y = rect.y()
+      properties.width = rect.width()
+      properties.height = rect.height()
     }
   });
 }
 
-function drawCircle(container: Container, circle: Circle) {
+function drawCircle(container: Container, circle: Circle, properties: any) {
   let startX = 0;
   let startY = 0;
   let firstClick = true;
+  let radius = 0
 
   // @ts-ignore
   container.on('click.draw', (e: MouseEvent) => {
@@ -92,21 +103,24 @@ function drawCircle(container: Container, circle: Circle) {
       startY = e.offsetY
       circle.addTo(container).center(startX, startY)
 
-      // @ts-ignore
+        // @ts-ignore
       container.on('mousemove.draw', (e: MouseEvent) => {
         let width = e.offsetX - startX;
         let height = e.offsetY - startY;
-        let r = Math.sqrt(width * width + height * height)
-        circle.radius(r)
+        radius = Math.sqrt(width * width + height * height)
+        circle.radius(radius)
       })
     } else {
       StopDraw(container)
+      properties.x = circle.cx()
+      properties.y = circle.cy()
+      properties.radius = radius
     }
   });
 }
 
 
-function drawEllipse(container: Container, ellipse: Ellipse) {
+function drawEllipse(container: Container, ellipse: Ellipse, properties: any) {
   let startX = 0;
   let startY = 0;
   let firstClick = true;
@@ -137,12 +151,16 @@ function drawEllipse(container: Container, ellipse: Ellipse) {
     } else {
       outline.remove()
       StopDraw(container)
+      properties.x = ellipse.x() //startX
+      properties.y = ellipse.y() //startY
+      properties.width = ellipse.width()
+      properties.height = ellipse.height()
     }
   });
 }
 
 
-function drawPoly(container: Container, poly: Polygon | Polyline) {
+function drawPoly(container: Container, poly: Polygon | Polyline, properties: any) {
   let firstClick = true;
 
   // @ts-ignore
@@ -169,6 +187,7 @@ function drawPoly(container: Container, poly: Polygon | Polyline) {
 
           //line.draw('done');
           StopDraw(container)
+          properties.points = arr.toArray()
 
           //off listener
           document.removeEventListener('keydown', onKeydown)
@@ -240,24 +259,24 @@ export function DrawComponent(container: Container, component: HmiComponent): El
     case "svg" :
     case "object":
       // @ts-ignore
-      drawRect(container, elem)
+      drawRect(container, elem, {})
       break
     case "circle" :
       // @ts-ignore
-      drawCircle(container, elem)
+      drawCircle(container, elem, {})
       break
     case "ellipse" :
       // @ts-ignore
-      drawEllipse(container, elem)
+      drawEllipse(container, elem, {})
       break
     case "line" :
       // @ts-ignore
-      drawLine(container, elem)
+      drawLine(container, elem, {})
       break
     case "polyline" :
     case "polygon" :
       // @ts-ignore
-      drawPoly(container, elem)
+      drawPoly(container, elem, {})
       break
     case "path" :
     default:

@@ -59,16 +59,17 @@
     </nz-sider>
   </nz-layout>
   <nz-footer>
-    填充色
-    <input [(colorPicker)]="color" [style.background]="color"/>
+    填充
+    <input class="color" [(colorPicker)]="color" [style.background]="color"/>
     <a (click)="color='none'">无填充</a>
+    <nz-divider nzType="vertical"></nz-divider>
 
-    边框色
-    <input [(colorPicker)]="stroke" [style.background]="stroke" cpPresetLabel="123"/>
+    边框
+    <input class="color" [(colorPicker)]="stroke" [style.background]="stroke" cpPresetLabel="123"/>
     <a (click)="stroke='none'">无边框</a>
 
-    边框大小
-    边框线形
+    大小
+    线形
 
   </nz-footer>
 </nz-layout>
