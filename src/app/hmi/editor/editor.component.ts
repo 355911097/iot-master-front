@@ -39,7 +39,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.entities.forEach(en => {
       let cmp = GetComponent(en.component)
       if (!cmp) return
-      en.element = CreateElement(this.canvas, cmp)
+      en.$element = CreateElement(this.canvas, cmp)
       cmp.setup.call(en.$object, en.properties)
     })
   }
@@ -47,8 +47,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
   drawEntity(entity: HmiEntity) {
     let cmp = GetComponent(entity.component)
     if (!cmp) return
-    entity.element = CreateElement(this.canvas, cmp)
-    entity.$object = CreateComponentObject(cmp, entity.element)
+    entity.$element = CreateElement(this.canvas, cmp)
+    entity.$object = CreateComponentObject(cmp, entity.$element)
     cmp.setup.call(entity.$object, entity.properties)
   }
 
@@ -61,19 +61,22 @@ export class EditorComponent implements OnInit, AfterViewInit {
     if (properties.hasOwnProperty('color'))
       properties.color = this.color // "none"
 
-    let element = DrawComponent(this.canvas, cmp);
+    let element = CreateElement(this.canvas, cmp)
+
     let entity: HmiEntity = {
-        name: "",
-        component: cmp.uuid,
-        properties,
-        element,
-        $object: CreateComponentObject(cmp, element),
+      name: "",
+      component: cmp.uuid,
+      properties,
+
+      $element: element,
+      $component: cmp,
+      $object: CreateComponentObject(cmp, element),
     }
-
-
     this.entities.push(entity)
     cmp.setup.call(entity.$object, entity.properties)
 
+    //画
+    DrawComponent(this.canvas, entity);
 
     //TODO delete
     // if (cmp.basicProperties?.border) {

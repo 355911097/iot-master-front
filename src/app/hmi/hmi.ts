@@ -87,8 +87,9 @@ export interface HmiEntity {
   name: string
   component: string //uuid
   properties: any //{ [name: string]: any }
-  element: ElementAlias
 
+  $element: ElementAlias
+  $component: HmiComponent
   $object: any;
 
   //TODO

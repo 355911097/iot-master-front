@@ -12,7 +12,7 @@ import {
   Svg,
   Text,
 } from "@svgdotjs/svg.js";
-import {HmiComponent} from "../hmi";
+import {HmiComponent, HmiEntity} from "../hmi";
 
 export function StopDraw(container: Container) {
   container.off('click.draw')
@@ -247,11 +247,11 @@ export function CreateElement(container: Container, component: HmiComponent): El
   return element;
 }
 
-export function DrawComponent(container: Container, component: HmiComponent): ElementAlias {
+export function DrawComponent(container: Container, entity: HmiEntity): void {
   StopDraw(container)
 
-  let elem = CreateElement(container, component)
-  const type = component.type || "svg"
+ // let elem = CreateElement(container, component)
+  const type = entity.$component.type || "svg"
   switch (type) {
     case "rect" :
     case "image" :
@@ -259,29 +259,28 @@ export function DrawComponent(container: Container, component: HmiComponent): El
     case "svg" :
     case "object":
       // @ts-ignore
-      drawRect(container, elem, {})
+      drawRect(container, entity.$element, entity.properties)
       break
     case "circle" :
       // @ts-ignore
-      drawCircle(container, elem, {})
+      drawCircle(container, entity.$element, entity.properties)
       break
     case "ellipse" :
       // @ts-ignore
-      drawEllipse(container, elem, {})
+      drawEllipse(container, entity.$element, entity.properties)
       break
     case "line" :
       // @ts-ignore
-      drawLine(container, elem, {})
+      drawLine(container, entity.$element, entity.properties)
       break
     case "polyline" :
     case "polygon" :
       // @ts-ignore
-      drawPoly(container, elem, {})
+      drawPoly(container, entity.$element, entity.properties)
       break
     case "path" :
     default:
       throw new Error("不支持的控件类型：" + type)
   }
-  return elem;
 }
 
