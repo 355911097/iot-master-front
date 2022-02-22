@@ -78,15 +78,5 @@ export class EditorComponent implements OnInit, AfterViewInit {
     //画
     DrawComponent(this.canvas, entity);
 
-    //TODO delete
-    // if (cmp.basicProperties?.border) {
-    //   // @ts-ignore
-    //   elem.stroke("white")
-    // }
-    // if (cmp.basicProperties?.fill) {
-    //   // @ts-ignore
-    //   elem.fill("none")
-    // }
-
   }
 }
