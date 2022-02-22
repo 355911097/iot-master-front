@@ -41,21 +41,12 @@ export class EditorComponent implements OnInit, AfterViewInit {
       let cmp = GetComponent(en.component)
       if (!cmp) return
       en.$element = CreateElement(this.canvas, cmp)
+      en.$object = CreateComponentObject(cmp, en.$element)
       cmp.setup.call(en.$object, en.properties)
+      // @ts-ignore
+      entity.$element.draggable()
     })
   }
-
-  drawEntity(entity: HmiEntity) {
-    let cmp = GetComponent(entity.component)
-    if (!cmp) return
-    entity.$element = CreateElement(this.canvas, cmp)
-    entity.$object = CreateComponentObject(cmp, entity.$element)
-    cmp.setup.call(entity.$object, entity.properties)
-
-    // @ts-ignore
-    entity.$element.draggable()
-  }
-
 
   draw(cmp: HmiComponent) {
     this.currentComponent = cmp;
@@ -67,7 +58,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
       properties.color = this.color // "none"
 
     let element = CreateElement(this.canvas, cmp)
-
     // @ts-ignore
     element.draggable()
 
