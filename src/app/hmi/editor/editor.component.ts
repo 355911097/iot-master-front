@@ -1,5 +1,6 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {ElementAlias, Svg, SVG} from '@svgdotjs/svg.js';
+import {Svg, SVG} from '@svgdotjs/svg.js';
+import '@svgdotjs/svg.draggable.js'
 import {GetComponent, GroupedComponents} from "../components/component";
 import {CreateComponentObject, GetDefaultProperties, HmiComponent, HmiEntity} from "../hmi";
 import {CreateElement, DrawComponent} from "../components/draw";
@@ -50,7 +51,11 @@ export class EditorComponent implements OnInit, AfterViewInit {
     entity.$element = CreateElement(this.canvas, cmp)
     entity.$object = CreateComponentObject(cmp, entity.$element)
     cmp.setup.call(entity.$object, entity.properties)
+
+    // @ts-ignore
+    entity.$element.draggable()
   }
+
 
   draw(cmp: HmiComponent) {
     this.currentComponent = cmp;
@@ -62,6 +67,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
       properties.color = this.color // "none"
 
     let element = CreateElement(this.canvas, cmp)
+
+    // @ts-ignore
+    element.draggable()
 
     let entity: HmiEntity = {
       name: "",
