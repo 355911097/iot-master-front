@@ -4,6 +4,7 @@ import '@svgdotjs/svg.draggable.js'
 import {GetComponent, GroupedComponents} from "../components/component";
 import {CreateComponentObject, GetDefaultProperties, HmiComponent, HmiEntity} from "../hmi";
 import {CreateElement, DrawComponent, OnEntityMove} from "../components/draw";
+import {EditComponent} from "../components/edit";
 
 @Component({
   selector: 'app-editor',
@@ -22,6 +23,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
   groupedComponents = GroupedComponents
 
   entities: Array<HmiEntity> = []
+  current: HmiEntity | undefined;
 
   color = "none"
   stroke = "white"
@@ -43,8 +45,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
       en.$element = CreateElement(this.canvas, cmp)
       en.$object = CreateComponentObject(cmp, en.$element)
       cmp.setup.call(en.$object, en.properties)
-      // @ts-ignore
-      en.$element.draggable().on('dragmove.editor', ()=> OnEntityMove(en));
+
+      this.EditableEntity(en);
     })
   }
 
@@ -74,7 +76,21 @@ export class EditorComponent implements OnInit, AfterViewInit {
     //画
     DrawComponent(this.canvas, entity);
 
+    this.EditableEntity(entity);
+  }
+
+  EditableEntity(entity: HmiEntity) {
+    let element = entity.$element;
     // @ts-ignore
     element.draggable().on('dragmove.editor', ()=> OnEntityMove(entity));
+    element.on('click', ()=>{
+      if (this.current == entity) {
+        //TODO 取消编辑
+        return
+      }
+      this.current = entity
+      EditComponent(this.canvas, entity)
+    })
+
   }
 }
