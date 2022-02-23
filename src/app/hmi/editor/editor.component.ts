@@ -10,7 +10,7 @@ import {
   Polyline,
   Rect,
   Svg,
-  SVG
+  SVG, Text
 } from '@svgdotjs/svg.js';
 import '@svgdotjs/svg.draggable.js'
 import {GetComponent, GroupedComponents} from "../components/component";
@@ -77,7 +77,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
   makeEntityEditable(entity: HmiEntity) {
     let element = entity.$element;
     // @ts-ignore
-    element.draggable().on('dragmove.editor', (e)=> {
+    element.draggable().on('dragmove', (e)=> {
       //console.log("move", e)
       this.onMove(entity)
     });
@@ -93,7 +93,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       }
       this.current = entity
       this.editLayer.clear()
-      EditComponent(this.editLayer, entity)
+      this.EditComponent(entity)
     })
 
   }
@@ -401,6 +401,70 @@ export class EditorComponent implements OnInit, AfterViewInit {
       case "polygon" :
         // @ts-ignore
         this.drawPoly(entity.$element, entity.properties)
+        break
+      case "path" :
+      default:
+        throw new Error("不支持的控件类型：" + type)
+    }
+  }
+
+
+
+  editPoints(element: Line | Polygon | Polyline, properties: any) {
+    let points = element.array() //.toArray()
+    points.forEach((p, i) => {
+      let pt = this.editLayer.circle(8).fill('#7be').center(p[0], p[1]).css('cursor', 'pointer').draggable();
+      pt.on("dragmove", () => {
+        p[0] = pt.cx()
+        p[1] = pt.cy()
+        element.plot(points)
+      })
+    })
+  }
+
+  editRect(element: Rect | Ellipse | Text | Image | Svg | ForeignObject, properties: any) {
+    let obj = element.attr()
+    let border = this.editLayer.rect(obj).fill('none').stroke({width:1,color:'#7be',dasharray:"6 2",dashoffset:0});
+    // @ts-ignore
+    border.animate().ease('-').stroke({dashoffset:8}).loop();
+
+    let lt = this.editLayer.rect(8,8).fill('#7be').center(obj.x, obj.y).css('cursor', 'nw-resize').draggable();
+    let lm = this.editLayer.rect(8,8).fill('#7be').center(obj.x, obj.y + obj.height*0.5).css('cursor', 'w-resize').draggable();
+    let lb = this.editLayer.rect(8,8).fill('#7be').center(obj.x, obj.y + obj.height).css('cursor', 'sw-resize').draggable();
+    let rt = this.editLayer.rect(8,8).fill('#7be').center(obj.x+obj.width, obj.y).css('cursor', 'ne-resize').draggable();
+    let rm = this.editLayer.rect(8,8).fill('#7be').center(obj.x+obj.width, obj.y + obj.height*0.5).css('cursor', 'e-resize').draggable();
+    let rb = this.editLayer.rect(8,8).fill('#7be').center(obj.x+obj.width, obj.y + obj.height).css('cursor', 'se-resize').draggable();
+    let t = this.editLayer.rect(8,8).fill('#7be').center(obj.x+obj.width*0.5, obj.y).css('cursor', 'n-resize').draggable();
+    let b = this.editLayer.rect(8,8).fill('#7be').center(obj.x+obj.width*0.5, obj.y + obj.height).css('cursor', 's-resize').draggable();
+  }
+
+  editCircle(element: Circle, properties: any) {
+
+  }
+
+
+  EditComponent(entity: HmiEntity) {
+    let elem = entity.$element
+    const type = entity.$component.type || "svg"
+    switch (type) {
+      case "rect" :
+      case "ellipse" :
+      case "image" :
+      case "text" :
+      case "svg" :
+      case "object":
+        // @ts-ignore
+        this.editRect(entity.$element, entity.properties)
+        break
+      case "circle" :
+        // @ts-ignore
+        this.editCircle(entity.$element, entity.properties)
+        break
+      case "line" :
+      case "polyline" :
+      case "polygon" :
+        // @ts-ignore
+        this.editPoints(entity.$element, entity.properties)
         break
       case "path" :
       default:
