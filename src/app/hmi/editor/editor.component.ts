@@ -15,8 +15,7 @@ import {
 import '@svgdotjs/svg.draggable.js'
 import {GetComponent, GroupedComponents} from "../components/component";
 import {CreateComponentObject, GetDefaultProperties, HmiComponent, HmiEntity} from "../hmi";
-import {CreateElement, DrawComponent, OnEntityMove, StopDraw} from "../components/draw";
-import {EditComponent} from "../components/edit";
+import {CreateElement} from "../components/draw";
 
 @Component({
   selector: 'app-editor',
@@ -407,8 +406,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
         throw new Error("不支持的控件类型：" + type)
     }
   }
-
-
 
   editPoints(element: Line | Polygon | Polyline, properties: any) {
     let points = element.array() //.toArray()
