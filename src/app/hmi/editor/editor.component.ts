@@ -3,7 +3,7 @@ import {Svg, SVG} from '@svgdotjs/svg.js';
 import '@svgdotjs/svg.draggable.js'
 import {GetComponent, GroupedComponents} from "../components/component";
 import {CreateComponentObject, GetDefaultProperties, HmiComponent, HmiEntity} from "../hmi";
-import {CreateElement, DrawComponent} from "../components/draw";
+import {CreateElement, DrawComponent, OnEntityMove} from "../components/draw";
 
 @Component({
   selector: 'app-editor',
@@ -44,7 +44,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       en.$object = CreateComponentObject(cmp, en.$element)
       cmp.setup.call(en.$object, en.properties)
       // @ts-ignore
-      entity.$element.draggable()
+      en.$element.draggable().on('dragmove.editor', ()=> OnEntityMove(en));
     })
   }
 
@@ -58,8 +58,6 @@ export class EditorComponent implements OnInit, AfterViewInit {
       properties.color = this.color // "none"
 
     let element = CreateElement(this.canvas, cmp)
-    // @ts-ignore
-    element.draggable()
 
     let entity: HmiEntity = {
       name: "",
@@ -76,5 +74,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     //画
     DrawComponent(this.canvas, entity);
 
+    // @ts-ignore
+    element.draggable().on('dragmove.editor', ()=> OnEntityMove(entity));
   }
 }

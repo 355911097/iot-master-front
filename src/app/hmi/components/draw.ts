@@ -19,6 +19,14 @@ export function StopDraw(container: Container) {
   container.off('mousemove.draw')
 }
 
+function moveLine(line: Line, properties: any) {
+  let points = line.plot().toArray()
+  properties.x1 = points[0]
+  properties.y1 = points[1]
+  properties.x2 = points[2]
+  properties.y2 = points[3]
+}
+
 function drawLine(container: Container, line: Line, properties: any) {
   let startX = 0;
   let startY = 0;
@@ -39,15 +47,17 @@ function drawLine(container: Container, line: Line, properties: any) {
     } else {
       StopDraw(container)
       //properties.points = line.plot().toArray()
-      let points = line.plot().toArray()
-      properties.x1 = points[0]
-      properties.y1 = points[1]
-      properties.x2 = points[2]
-      properties.y2 = points[3]
+      moveLine(line, properties)
     }
   });
 }
 
+function moveRect(rect: Rect | Ellipse | Image | Svg | ForeignObject, properties: any) {
+  properties.x = rect.x()
+  properties.y = rect.y()
+  properties.width = rect.width()
+  properties.height = rect.height()
+}
 
 function drawRect(container: Container, rect: Rect | Ellipse | Image | Svg | ForeignObject, properties: any) {
   //let rect: Rect;
@@ -81,12 +91,16 @@ function drawRect(container: Container, rect: Rect | Ellipse | Image | Svg | For
     } else {
       outline.remove()
       StopDraw(container)
-      properties.x = rect.x()
-      properties.y = rect.y()
-      properties.width = rect.width()
-      properties.height = rect.height()
+      moveRect(rect, properties);
     }
   });
+}
+
+function moveCircle(circle: Circle, properties: any) {
+  properties.x = circle.cx()
+  properties.y = circle.cy()
+  // @ts-ignore
+  properties.radius = circle.width() / 2;
 }
 
 function drawCircle(container: Container, circle: Circle, properties: any) {
@@ -112,11 +126,17 @@ function drawCircle(container: Container, circle: Circle, properties: any) {
       })
     } else {
       StopDraw(container)
-      properties.x = circle.cx()
-      properties.y = circle.cy()
-      properties.radius = radius
+      moveCircle(circle, properties)
+      //properties.radius = radius
     }
   });
+}
+
+function moveEllipse(ellipse: Ellipse, properties: any) {
+  properties.x = ellipse.x() //startX
+  properties.y = ellipse.y() //startY
+  properties.width = ellipse.width()
+  properties.height = ellipse.height()
 }
 
 
@@ -151,14 +171,14 @@ function drawEllipse(container: Container, ellipse: Ellipse, properties: any) {
     } else {
       outline.remove()
       StopDraw(container)
-      properties.x = ellipse.x() //startX
-      properties.y = ellipse.y() //startY
-      properties.width = ellipse.width()
-      properties.height = ellipse.height()
+      moveEllipse(ellipse, properties)
     }
   });
 }
 
+function movePoly(poly: Polygon | Polyline, properties: any) {
+  properties.points = poly.array().toArray()
+}
 
 function drawPoly(container: Container, poly: Polygon | Polyline, properties: any) {
   let firstClick = true;
@@ -277,6 +297,39 @@ export function DrawComponent(container: Container, entity: HmiEntity): void {
     case "polygon" :
       // @ts-ignore
       drawPoly(container, entity.$element, entity.properties)
+      break
+    case "path" :
+    default:
+      throw new Error("不支持的控件类型：" + type)
+  }
+}
+
+export function OnEntityMove(entity: HmiEntity) {const type = entity.$component.type || "svg"
+  switch (type) {
+    case "rect" :
+    case "image" :
+    case "text" :
+    case "svg" :
+    case "object":
+      // @ts-ignore
+      moveRect(entity.$element, entity.properties)
+      break
+    case "circle" :
+      // @ts-ignore
+      moveCircle(entity.$element, entity.properties)
+      break
+    case "ellipse" :
+      // @ts-ignore
+      moveEllipse(entity.$element, entity.properties)
+      break
+    case "line" :
+      // @ts-ignore
+      moveLine(entity.$element, entity.properties)
+      break
+    case "polyline" :
+    case "polygon" :
+      // @ts-ignore
+      movePoly(entity.$element, entity.properties)
       break
     case "path" :
     default:
