@@ -1,9 +1,21 @@
 import {AfterViewInit, Component, OnInit, ViewChild} from '@angular/core';
-import {Svg, SVG} from '@svgdotjs/svg.js';
+import {
+  Circle,
+  Container,
+  Ellipse,
+  ForeignObject,
+  Image,
+  Line,
+  Polygon,
+  Polyline,
+  Rect,
+  Svg,
+  SVG
+} from '@svgdotjs/svg.js';
 import '@svgdotjs/svg.draggable.js'
 import {GetComponent, GroupedComponents} from "../components/component";
 import {CreateComponentObject, GetDefaultProperties, HmiComponent, HmiEntity} from "../hmi";
-import {CreateElement, DrawComponent, OnEntityMove} from "../components/draw";
+import {CreateElement, DrawComponent, OnEntityMove, StopDraw} from "../components/draw";
 import {EditComponent} from "../components/edit";
 
 @Component({
@@ -17,6 +29,15 @@ export class EditorComponent implements OnInit, AfterViewInit {
   @ViewChild('canvas') canvasElement: HTMLElement | undefined;
   // @ts-ignore
   canvas: Svg;
+
+  // @ts-ignore
+  baseLayer: Container;
+
+  // @ts-ignore
+  mainLayer: Container;
+
+  // @ts-ignore
+  editLayer: Container;
 
   currentComponent: HmiComponent | undefined = undefined;
 
@@ -38,6 +59,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
   ngAfterViewInit(): void {
     // @ts-ignore
     this.canvas = SVG().addTo('#canvas').size("100%", "100%");
+    this.baseLayer = this.canvas.group();
+    this.mainLayer = this.canvas.group();
+    this.editLayer = this.canvas.group();
 
     this.entities.forEach(en => {
       let cmp = GetComponent(en.component)
@@ -46,8 +70,32 @@ export class EditorComponent implements OnInit, AfterViewInit {
       en.$object = CreateComponentObject(cmp, en.$element)
       cmp.setup.call(en.$object, en.properties)
 
-      this.EditableEntity(en);
+      this.makeEntityEditable(en);
     })
+  }
+
+  makeEntityEditable(entity: HmiEntity) {
+    let element = entity.$element;
+    // @ts-ignore
+    element.draggable().on('dragmove.editor', (e)=> {
+      //console.log("move", e)
+      this.onMove(entity)
+    });
+
+    element.on('dragstart', e=>{
+      this.editLayer.clear() //TODO 拖动结束，要重新绘制编辑框
+    })
+
+    element.on('click', (e)=>{
+      if (this.current == entity) {
+        //TODO 取消编辑
+        return
+      }
+      this.current = entity
+      this.editLayer.clear()
+      EditComponent(this.editLayer, entity)
+    })
+
   }
 
   draw(cmp: HmiComponent) {
@@ -59,7 +107,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     if (properties.hasOwnProperty('color'))
       properties.color = this.color // "none"
 
-    let element = CreateElement(this.canvas, cmp)
+    let element = CreateElement(this.mainLayer, cmp)
 
     let entity: HmiEntity = {
       name: "",
@@ -74,23 +122,293 @@ export class EditorComponent implements OnInit, AfterViewInit {
     cmp.setup.call(entity.$object, entity.properties)
 
     //画
-    DrawComponent(this.canvas, entity);
+    this.drawEntity(entity);
 
-    this.EditableEntity(entity);
+    this.makeEntityEditable(entity);
   }
 
-  EditableEntity(entity: HmiEntity) {
-    let element = entity.$element;
+
+  StopDraw() {
+    this.canvas.off('click.draw')
+    this.canvas.off('mousemove.draw')
+  }
+
+  moveLine(line: Line, properties: any) {
+    let points = line.plot().toArray()
+    properties.x1 = points[0]
+    properties.y1 = points[1]
+    properties.x2 = points[2]
+    properties.y2 = points[3]
+  }
+
+  moveRect(rect: Rect | Ellipse | Image | Svg | ForeignObject, properties: any) {
+    properties.x = rect.x()
+    properties.y = rect.y()
+    properties.width = rect.width()
+    properties.height = rect.height()
+  }
+
+  moveCircle(circle: Circle, properties: any) {
+    properties.x = circle.cx()
+    properties.y = circle.cy()
     // @ts-ignore
-    element.draggable().on('dragmove.editor', ()=> OnEntityMove(entity));
-    element.on('click', ()=>{
-      if (this.current == entity) {
-        //TODO 取消编辑
-        return
-      }
-      this.current = entity
-      EditComponent(this.canvas, entity)
-    })
-
+    properties.radius = circle.width() / 2;
   }
+
+  moveEllipse(ellipse: Ellipse, properties: any) {
+    properties.x = ellipse.x() //startX
+    properties.y = ellipse.y() //startY
+    properties.width = ellipse.width()
+    properties.height = ellipse.height()
+  }
+
+  movePoly(poly: Polygon | Polyline, properties: any) {
+    properties.points = poly.array().toArray()
+  }
+
+  onMove(entity: HmiEntity) {
+    const type = entity.$component.type || "svg"
+    switch (type) {
+      case "rect" :
+      case "image" :
+      case "text" :
+      case "svg" :
+      case "object":
+        // @ts-ignore
+        this.moveRect(entity.$element, entity.properties)
+        break
+      case "circle" :
+        // @ts-ignore
+        this.moveCircle(entity.$element, entity.properties)
+        break
+      case "ellipse" :
+        // @ts-ignore
+        this.moveEllipse(entity.$element, entity.properties)
+        break
+      case "line" :
+        // @ts-ignore
+        this.moveLine(entity.$element, entity.properties)
+        break
+      case "polyline" :
+      case "polygon" :
+        // @ts-ignore
+        this.movePoly(entity.$element, entity.properties)
+        break
+      case "path" :
+      default:
+        throw new Error("不支持的控件类型：" + type)
+    }
+  }
+
+  drawLine(line: Line, properties: any) {
+    let startX = 0;
+    let startY = 0;
+    let firstClick = true;
+
+    // @ts-ignore
+    this.canvas.on('click.draw', (e: MouseEvent) => {
+      if (firstClick) {
+        firstClick = false
+        startX = e.offsetX
+        startY = e.offsetY
+        line.addTo(this.mainLayer)
+
+        // @ts-ignore
+        this.canvas.on('mousemove.draw', (e: MouseEvent) => {
+          line.plot(startX, startY, e.offsetX, e.offsetY)
+        })
+      } else {
+        this.StopDraw()
+        //properties.points = line.plot().toArray()
+        this.moveLine(line, properties)
+      }
+    });
+  }
+
+  drawRect(rect: Rect | Ellipse | Image | Svg | ForeignObject, properties: any) {
+    //let rect: Rect;
+    let startX = 0;
+    let startY = 0;
+    let firstClick = true;
+
+    let outline = new Rect();
+
+    // @ts-ignore
+    this.canvas.on('click.draw', (e: MouseEvent) => {
+      if (firstClick) {
+        firstClick = false
+        startX = e.offsetX
+        startY = e.offsetY
+        rect.addTo(this.mainLayer).move(startX, startY)
+
+        outline.addTo(this.editLayer).move(startX, startY).stroke({width:1,color:'#7be',dasharray:"6 2",dashoffset:8}).fill("none")
+        // @ts-ignore
+        outline.animate().ease('-').stroke({dashoffset:0}).loop();
+
+        // @ts-ignore
+        this.canvas.on('mousemove.draw', (e: MouseEvent) => {
+          let width = e.offsetX - startX;
+          let height = e.offsetY - startY;
+          if (width > 0 && height > 0) {
+            rect.size(width, height)
+            outline.size(width, height)
+          }
+        })
+      } else {
+        outline.remove()
+        this.StopDraw()
+        this.moveRect(rect, properties);
+      }
+    });
+  }
+
+  drawCircle(circle: Circle, properties: any) {
+    let startX = 0;
+    let startY = 0;
+    let firstClick = true;
+    let radius = 0
+
+    // @ts-ignore
+    this.canvas.on('click.draw', (e: MouseEvent) => {
+      if (firstClick) {
+        firstClick = false
+        startX = e.offsetX
+        startY = e.offsetY
+        circle.addTo(this.mainLayer).center(startX, startY)
+
+        // @ts-ignore
+        this.canvas.on('mousemove.draw', (e: MouseEvent) => {
+          let width = e.offsetX - startX;
+          let height = e.offsetY - startY;
+          radius = Math.sqrt(width * width + height * height)
+          circle.radius(radius)
+        })
+      } else {
+        this.StopDraw()
+        this.moveCircle(circle, properties)
+        //properties.radius = radius
+      }
+    });
+  }
+
+  drawEllipse(ellipse: Ellipse, properties: any) {
+    let startX = 0;
+    let startY = 0;
+    let firstClick = true;
+
+    let outline = new Rect();
+
+    // @ts-ignore
+    this.canvas.on('click.draw', (e: MouseEvent) => {
+      if (firstClick) {
+        firstClick = false
+        startX = e.offsetX
+        startY = e.offsetY
+        ellipse.addTo(this.mainLayer).move(startX, startY)
+
+        outline.addTo(this.editLayer).move(startX, startY).stroke({width:1,color:'#7be',dasharray:"6 2",dashoffset:8}).fill("none")
+        // @ts-ignore
+        outline.animate().ease('-').stroke({dashoffset:0}).loop();
+
+        // @ts-ignore
+        this.canvas.on('mousemove.draw', (e: MouseEvent) => {
+          let width = e.offsetX - startX
+          let height = e.offsetY - startY
+          if (width > 0 && height > 0) {
+            ellipse.center(startX + width / 2, startY + height / 2).size(width, height)
+            outline.size(width, height)
+          }
+        })
+      } else {
+        outline.remove()
+        this.StopDraw()
+        this.moveEllipse(ellipse, properties)
+      }
+    });
+  }
+
+  drawPoly(poly: Polygon | Polyline, properties: any) {
+    let firstClick = true;
+
+    // @ts-ignore
+    this.canvas.on('click.draw', (e: MouseEvent) => {
+      if (firstClick) {
+        firstClick = false
+        poly.addTo(this.mainLayer).plot([e.offsetX, e.offsetY, e.offsetX, e.offsetY])
+
+        // @ts-ignore
+        this.canvas.on('mousemove.draw', (e: MouseEvent) => {
+          let arr = poly.array()
+          let pt = arr[arr.length - 1]
+          pt[0] = e.offsetX
+          pt[1] = e.offsetY
+          poly.plot(arr)
+        })
+
+        let that = this;
+        //TODO on Esc:cancel
+        document.addEventListener('keydown', function onKeydown(e) {
+          if (e.key == 'Escape') {
+            let arr = poly.array()
+            arr.pop() //删除最后一个
+            poly.plot(arr)
+
+            //line.draw('done');
+            that.StopDraw()
+            properties.points = arr.toArray()
+
+            //off listener
+            document.removeEventListener('keydown', onKeydown)
+          }
+        });
+
+      } else {
+        let arr = poly.array()
+        arr.pop() //删除最后一个
+        arr.push([e.offsetX, e.offsetY], [e.offsetX, e.offsetY])
+        poly.plot(arr)
+      }
+    });
+  }
+
+  drawEntity(entity: HmiEntity): void {
+    this.StopDraw()
+
+    // let elem = CreateElement(container, component)
+    const type = entity.$component.type || "svg"
+    switch (type) {
+      case "rect" :
+      case "image" :
+      case "text" :
+      case "svg" :
+      case "object":
+        // @ts-ignore
+        this.drawRect(entity.$element, entity.properties)
+        break
+      case "circle" :
+        // @ts-ignore
+        this.drawCircle(entity.$element, entity.properties)
+        break
+      case "ellipse" :
+        // @ts-ignore
+        this.drawEllipse(entity.$element, entity.properties)
+        break
+      case "line" :
+        // @ts-ignore
+        this.drawLine(entity.$element, entity.properties)
+        break
+      case "polyline" :
+      case "polygon" :
+        // @ts-ignore
+        this.drawPoly(entity.$element, entity.properties)
+        break
+      case "path" :
+      default:
+        throw new Error("不支持的控件类型：" + type)
+    }
+  }
+
+
+
+
 }
