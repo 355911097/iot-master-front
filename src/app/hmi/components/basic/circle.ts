@@ -6,7 +6,9 @@ export let CircleComponent: HmiComponent = {
   icon: "/assets/hmi/components/circle.svg",
   group: "基础组件",
   type: "circle",
-  basicProperties: {border: true, color: true},
+  stroke: true,
+  color: true,
+  noRotation: true,
 
   setup(properties: any): void {
     if (properties.stroke) { // @ts-ignore

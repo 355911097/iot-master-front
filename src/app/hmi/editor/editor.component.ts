@@ -15,7 +15,7 @@ import {
 import '@svgdotjs/svg.draggable.js'
 import {GetComponent, GroupedComponents} from "../components/component";
 import {CreateComponentObject, GetDefaultProperties, HmiComponent, HmiEntity} from "../hmi";
-import {CreateElement} from "../components/draw";
+import {CreateElement} from "../components/create";
 
 @Component({
   selector: 'app-editor',
@@ -105,10 +105,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.currentComponent = cmp;
 
     let properties = GetDefaultProperties(cmp)
-    if (properties.hasOwnProperty('stroke'))
-      properties.stroke = this.stroke // "white"
-    if (properties.hasOwnProperty('color'))
-      properties.color = this.color // "none"
+    if (cmp.color)
+      properties.color = this.color
+    if (cmp.stroke)
+      properties.stroke = this.stroke
 
     let element = CreateElement(this.mainLayer, cmp)
 
@@ -425,7 +425,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
   editRect(element: Rect | Ellipse | Text | Image | Svg | ForeignObject, properties: any) {
     let obj = element.attr()
-    let border = this.editLayer.rect(obj).fill('none').stroke({width:1,color:'#7be',dasharray:"6 2",dashoffset:0});
+    let border = this.editLayer.rect(obj.width, obj.height).move(obj.x, obj.y).fill('none').stroke({width:1,color:'#7be',dasharray:"6 2",dashoffset:0});
     // @ts-ignore
     border.animate().ease('-').stroke({dashoffset:8}).loop();
 
@@ -521,7 +521,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
     function update() {
       let obj = element.attr()
-      border.attr(obj)
+      border.size(obj.width, obj.height).move(obj.x, obj.y)
+      //border.attr(obj)
       lt.center(obj.x, obj.y)
       lm.center(obj.x, obj.y + obj.height*0.5)
       lb.center(obj.x, obj.y + obj.height)

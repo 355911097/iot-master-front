@@ -26,20 +26,11 @@ export interface HmiComponent {
   //模板 svg
   svg?: string
 
-  //基础配置项
-  basicProperties?: {
-    //线型（默认 false）
-    border?: boolean, //stroke
-
-    //填充（默认 false）
-    color?: boolean,
-
-    //旋转（默认 true）
-    rotate?: boolean
-
-    //位置（默认 true）
-    position?: boolean
-  }
+  //基础配置
+  color?: boolean
+  stroke?: boolean
+  noRotation?: boolean
+  noPosition?: boolean
 
   //扩展配置项
   properties?: Array<HmiPropertyItem>

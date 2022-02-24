@@ -1,4 +1,4 @@
-import {HmiComponent, HmiPropertyItem} from "../hmi";
+import {HmiComponent} from "../hmi";
 import {LineComponent} from "./basic/line";
 import {CircleComponent} from "./basic/circle";
 import {PolylineComponent} from "./basic/polyline";
@@ -29,7 +29,6 @@ import {GaugeChartComponent} from "./chart/gauge";
 import {LineChartComponent} from "./chart/line";
 import {PieChartComponent} from "./chart/pie";
 import {RadarChartComponent} from "./chart/radar";
-import {borderProperties, colorProperties, positionProperties, rotateProperties} from "./properties";
 
 export let GroupedComponents: Array<Group> = [];
 
@@ -46,29 +45,8 @@ export function GetComponent(id: string): HmiComponent {
 }
 
 export function LoadComponent(obj: HmiComponent) {
-  //obj.basicProperties = obj.basicProperties || {};
-  obj.basicProperties = Object.assign({}, {
-    border: false, //stroke
-    color: false,
-    rotate: true,
-    position: true
-  }, obj.basicProperties);
-
   //if (indexedComponents.hasOwnProperty(obj.uuid))
   indexedComponents[obj.uuid] = obj;
-
-  //添加默认选项
-  let props: Array<HmiPropertyItem> = [];
-  if (obj.basicProperties.color)
-    props.push(...colorProperties)
-  if (obj.basicProperties.border)
-    props.push(...borderProperties)
-  if (obj.basicProperties.position)
-    props.push(...positionProperties)
-  if (obj.basicProperties.rotate)
-    props.push(...rotateProperties)
-
-  obj.properties = props.concat(obj.properties || [])
 
   if (!obj.group)
     obj.group = "扩展";

@@ -6,7 +6,8 @@ export let PolygonComponent: HmiComponent = {
   icon: "/assets/hmi/components/polygon.svg",
   group: "基础组件",
   type: "polygon",
-  basicProperties: {border: true, color: true},
+  stroke: true,
+  color: true,
 
   setup(properties: any): void {
     if (properties.stroke) { // @ts-ignore

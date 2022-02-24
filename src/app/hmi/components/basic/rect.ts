@@ -6,7 +6,8 @@ export let RectComponent: HmiComponent = {
   icon: "/assets/hmi/components/rect.svg",
   group: "基础组件",
   type: "rect",
-  basicProperties: {border: true, color: true},
+  stroke: true,
+  color: true,
 
   setup(properties: any): void {
     if (properties.stroke) { // @ts-ignore

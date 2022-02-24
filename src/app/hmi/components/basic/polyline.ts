@@ -6,7 +6,8 @@ export let PolylineComponent: HmiComponent = {
   icon: "/assets/hmi/components/polyline.svg",
   group: "基础组件",
   type: "polyline",
-  basicProperties: {border: true, color: false},
+  stroke: true,
+  color: true,
 
   setup(properties: any): void {
     if (properties.stroke) { // @ts-ignore

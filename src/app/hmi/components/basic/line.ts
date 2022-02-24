@@ -6,7 +6,8 @@ export let LineComponent: HmiComponent = {
   icon: "/assets/hmi/components/line.svg",
   group: "基础组件",
   type: "line",
-  basicProperties: {border: true, color: false},
+  stroke: true,
+  color: true,
 
   setup(properties: any): void {
     if (properties.stroke) { // @ts-ignore
