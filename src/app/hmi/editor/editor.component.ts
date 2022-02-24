@@ -82,7 +82,11 @@ export class EditorComponent implements OnInit, AfterViewInit {
     });
 
     element.on('dragstart', e=>{
-      this.editLayer.clear() //TODO 拖动结束，要重新绘制编辑框
+      this.editLayer.clear()
+    })
+
+    element.on('dragend', e=>{
+      this.edit(entity)
     })
 
     element.on('click', (e)=>{
@@ -91,8 +95,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
         return
       }
       this.current = entity
-      this.editLayer.clear()
-      this.EditComponent(entity)
+      //this.editLayer.clear()
+      this.edit(entity)
     })
 
   }
@@ -433,6 +437,100 @@ export class EditorComponent implements OnInit, AfterViewInit {
     let rb = this.editLayer.rect(8,8).fill('#7be').center(obj.x+obj.width, obj.y + obj.height).css('cursor', 'se-resize').draggable();
     let t = this.editLayer.rect(8,8).fill('#7be').center(obj.x+obj.width*0.5, obj.y).css('cursor', 'n-resize').draggable();
     let b = this.editLayer.rect(8,8).fill('#7be').center(obj.x+obj.width*0.5, obj.y + obj.height).css('cursor', 's-resize').draggable();
+
+    lt.on("dragmove", ()=>{
+      // @ts-ignore
+      if (lt.cx() > element.width() + element.x())   return
+      // @ts-ignore
+      if (lt.cy() > element.height() + element.y())   return
+      // @ts-ignore
+      element.width(element.width() - lt.cx() + element.x())
+      // @ts-ignore
+      element.height(element.height() - lt.cy() + element.y())
+      element.x(lt.cx())
+      element.y(lt.cy())
+      update()
+    })
+    lm.on("dragmove", ()=>{
+      // @ts-ignore
+      if (lm.cx() > element.width() + element.x())   return
+      // @ts-ignore
+      element.width(element.width() - lm.cx() + element.x())
+      element.x(lm.cx())
+      update()
+    })
+    lb.on("dragmove", ()=>{
+      // @ts-ignore
+      if (lb.cx() > element.width() + element.x())   return
+      // @ts-ignore
+      if (lb.cy() < element.y())   return
+      // @ts-ignore
+      element.width(element.width() - lb.cx() + element.x())
+      // @ts-ignore
+      element.height(lb.cy() - element.y())
+      element.x(lb.cx())
+      update()
+    })
+
+    rt.on("dragmove", ()=>{
+      // @ts-ignore
+      if (rt.cx() < element.x())   return
+      // @ts-ignore
+      if (rt.cy() > element.height() + element.y())   return
+      // @ts-ignore
+      element.width(rt.cx() - element.x())
+      // @ts-ignore
+      element.height(element.height() - rt.cy() + element.y())
+      element.y(rt.cy())
+      update()
+    })
+    rm.on("dragmove", ()=>{
+      // @ts-ignore
+      if (rm.cx() < element.x())   return
+      // @ts-ignore
+      element.width(rm.cx() - element.x())
+      update()
+    })
+    rb.on("dragmove", ()=>{
+      // @ts-ignore
+      if (rb.cx() < element.x())   return
+      // @ts-ignore
+      if (rb.cy() < element.y())   return
+      // @ts-ignore
+      element.width(rb.cx() - element.x())
+      // @ts-ignore
+      element.height(rb.cy() - element.y())
+      update()
+    })
+    t.on("dragmove", ()=>{
+      // @ts-ignore
+      if (t.cy() > element.y() + element.height())   return
+      // @ts-ignore
+      element.height(element.height() - t.cy() + element.y())
+      element.y(t.cy())
+      update()
+    })
+    b.on("dragmove", ()=>{
+      // @ts-ignore
+      if (b.cy() < element.y())   return
+      // @ts-ignore
+      element.height(b.cy() - element.y())
+      update()
+    })
+
+
+    function update() {
+      let obj = element.attr()
+      border.attr(obj)
+      lt.center(obj.x, obj.y)
+      lm.center(obj.x, obj.y + obj.height*0.5)
+      lb.center(obj.x, obj.y + obj.height)
+      rt.center(obj.x+obj.width, obj.y)
+      rm.center(obj.x+obj.width, obj.y + obj.height*0.5)
+      rb.center(obj.x+obj.width, obj.y + obj.height)
+      t.center(obj.x+obj.width*0.5, obj.y)
+      b.center(obj.x+obj.width*0.5, obj.y + obj.height)
+    }
   }
 
   editCircle(element: Circle, properties: any) {
@@ -440,8 +538,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
 
-  EditComponent(entity: HmiEntity) {
-    let elem = entity.$element
+  edit(entity: HmiEntity) {
+    this.editLayer.clear()
     const type = entity.$component.type || "svg"
     switch (type) {
       case "rect" :
