@@ -534,7 +534,19 @@ export class EditorComponent implements OnInit, AfterViewInit {
   }
 
   editCircle(element: Circle, properties: any) {
+    // @ts-ignore
+    let x = element.cx() + element.width() / 2 // / Math.sqrt(2)
+    // @ts-ignore
+    let y = element.cy() // + element.width() / 2 / Math.sqrt(2)
 
+    let pt = this.editLayer.circle(8).fill('#7be').center(x, y).css('cursor', 'pointer').draggable();
+    pt.on("dragmove", () => {
+
+      let width = pt.cx() - element.cx();
+      let height = pt.cy() - element.cy();
+      let radius = Math.sqrt(width * width + height * height)
+      element.radius(radius)
+    })
   }
 
 
@@ -542,8 +554,9 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.editLayer.clear()
     const type = entity.$component.type || "svg"
     switch (type) {
-      case "rect" :
       case "ellipse" :
+        break
+      case "rect" :
       case "image" :
       case "text" :
       case "svg" :
