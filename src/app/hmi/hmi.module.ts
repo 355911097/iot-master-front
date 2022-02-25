@@ -10,6 +10,8 @@ import {NzDividerModule} from "ng-zorro-antd/divider";
 import {IconsProviderModule} from "./icons-provider.module";
 import {NzTableModule} from "ng-zorro-antd/table";
 import {ColorPickerModule} from "ngx-color-picker";
+import {NzSelectModule} from "ng-zorro-antd/select";
+import {FormsModule} from "@angular/forms";
 
 
 
@@ -20,6 +22,7 @@ import {ColorPickerModule} from "ngx-color-picker";
   ],
   imports: [
     CommonModule,
+    FormsModule,
     HmiRoutingModule,
     NzLayoutModule,
     NzCollapseModule,
@@ -28,6 +31,7 @@ import {ColorPickerModule} from "ngx-color-picker";
     NzTableModule,
     IconsProviderModule,
     ColorPickerModule,
+    NzSelectModule,
   ]
 })
 export class HmiModule { }

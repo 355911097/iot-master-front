@@ -2,9 +2,7 @@ import {HmiComponent} from "../../hmi";
 import {fontProperties} from "../properties";
 
 const template = `
-  <svg>
     <rect height="40" width="80"></rect>
-  </svg>
   `;
 
 export let ButtonComponent: HmiComponent = {
@@ -17,8 +15,15 @@ export let ButtonComponent: HmiComponent = {
   properties: [...fontProperties],
 
   //配置
+  init(props: any) {
+    // @ts-ignore
+    this.$element.svg(template)
+  },
+
+  //配置
   setup(props: any) {
 
+    console.log(props)
   },
 
   //更新数据

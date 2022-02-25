@@ -46,7 +46,12 @@ export class EditorComponent implements OnInit, AfterViewInit {
   current: HmiEntity | undefined;
 
   color = "none"
-  stroke = "white"
+  //stroke = "white"
+  //strokeWidth = 1;
+  stroke = {
+    color: 'white',
+    width: 1,
+  }
 
   constructor() {
   }
@@ -62,14 +67,15 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.mainLayer = this.canvas.group();
     this.editLayer = this.canvas.group();
 
-    this.entities.forEach(en => {
-      let cmp = GetComponent(en.component)
+    this.entities.forEach(entity => {
+      let cmp = GetComponent(entity.component)
       if (!cmp) return
-      en.$element = CreateElement(this.canvas, cmp)
-      en.$object = CreateComponentObject(cmp, en.$element)
-      cmp.setup.call(en.$object, en.properties)
+      entity.$element = CreateElement(this.canvas, cmp)
+      entity.$object = CreateComponentObject(cmp, entity.$element)
+      cmp.init?.call(entity.$object, entity.properties)
+      cmp.setup.call(entity.$object, entity.properties)
 
-      this.makeEntityEditable(en);
+      this.makeEntityEditable(entity);
     })
   }
 
@@ -122,6 +128,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       $object: CreateComponentObject(cmp, element),
     }
     this.entities.push(entity)
+    cmp.init?.call(entity.$object, entity.properties)
     cmp.setup.call(entity.$object, entity.properties)
 
     //画
@@ -136,37 +143,22 @@ export class EditorComponent implements OnInit, AfterViewInit {
     this.canvas.off('mousemove.draw')
   }
 
-  moveLine(line: Line, properties: any) {
-    let points = line.plot().toArray()
-    properties.x1 = points[0]
-    properties.y1 = points[1]
-    properties.x2 = points[2]
-    properties.y2 = points[3]
+  getLinePoints(line: Line | Polyline | Polygon, properties: any) {
+    properties.points = line.plot().toArray()
   }
 
-  moveRect(rect: Rect | Ellipse | Image | Svg | ForeignObject, properties: any) {
+  getRectPosition(rect: Rect | Ellipse | Image | Svg | ForeignObject, properties: any) {
     properties.x = rect.x()
     properties.y = rect.y()
     properties.width = rect.width()
     properties.height = rect.height()
   }
 
-  moveCircle(circle: Circle, properties: any) {
+  getCirclePosition(circle: Circle, properties: any) {
     properties.x = circle.cx()
     properties.y = circle.cy()
     // @ts-ignore
     properties.radius = circle.width() / 2;
-  }
-
-  moveEllipse(ellipse: Ellipse, properties: any) {
-    properties.x = ellipse.x() //startX
-    properties.y = ellipse.y() //startY
-    properties.width = ellipse.width()
-    properties.height = ellipse.height()
-  }
-
-  movePoly(poly: Polygon | Polyline, properties: any) {
-    properties.points = poly.array().toArray()
   }
 
   onMove(entity: HmiEntity) {
@@ -177,25 +169,19 @@ export class EditorComponent implements OnInit, AfterViewInit {
       case "text" :
       case "svg" :
       case "object":
+      case "ellipse" :
         // @ts-ignore
-        this.moveRect(entity.$element, entity.properties)
+        this.getRectPosition(entity.$element, entity.properties)
         break
       case "circle" :
         // @ts-ignore
-        this.moveCircle(entity.$element, entity.properties)
-        break
-      case "ellipse" :
-        // @ts-ignore
-        this.moveEllipse(entity.$element, entity.properties)
+        this.getCirclePosition(entity.$element, entity.properties)
         break
       case "line" :
-        // @ts-ignore
-        this.moveLine(entity.$element, entity.properties)
-        break
       case "polyline" :
       case "polygon" :
         // @ts-ignore
-        this.movePoly(entity.$element, entity.properties)
+        this.getLinePoints(entity.$element, entity.properties)
         break
       case "path" :
       default:
@@ -223,7 +209,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       } else {
         this.StopDraw()
         //properties.points = line.plot().toArray()
-        this.moveLine(line, properties)
+        this.getLinePoints(line, properties)
       }
     });
   }
@@ -260,7 +246,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       } else {
         outline.remove()
         this.StopDraw()
-        this.moveRect(rect, properties);
+        this.getRectPosition(rect, properties);
       }
     });
   }
@@ -288,7 +274,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
         })
       } else {
         this.StopDraw()
-        this.moveCircle(circle, properties)
+        this.getCirclePosition(circle, properties)
         //properties.radius = radius
       }
     });
@@ -325,7 +311,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       } else {
         outline.remove()
         this.StopDraw()
-        this.moveEllipse(ellipse, properties)
+        this.getRectPosition(ellipse, properties)
       }
     });
   }
@@ -358,7 +344,8 @@ export class EditorComponent implements OnInit, AfterViewInit {
 
             //line.draw('done');
             that.StopDraw()
-            properties.points = arr.toArray()
+            //properties.points = arr.toArray()
+            that.getLinePoints(poly, properties)
 
             //off listener
             document.removeEventListener('keydown', onKeydown)
@@ -411,7 +398,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
     }
   }
 
-  editPoints(element: Line | Polygon | Polyline, properties: any) {
+  editLine(element: Line | Polygon | Polyline, properties: any) {
     let points = element.array() //.toArray()
     points.forEach((p, i) => {
       let pt = this.editLayer.circle(8).fill('#7be').center(p[0], p[1]).css('cursor', 'pointer').draggable();
@@ -419,6 +406,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
         p[0] = pt.cx()
         p[1] = pt.cy()
         element.plot(points)
+        this.getLinePoints(element, properties)
       })
     })
   }
@@ -518,8 +506,10 @@ export class EditorComponent implements OnInit, AfterViewInit {
       update()
     })
 
-
+    let that = this
     function update() {
+      that.getRectPosition(element, properties)
+
       let obj = element.attr()
       border.size(obj.width, obj.height).move(obj.x, obj.y)
       //border.attr(obj)
@@ -547,6 +537,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       let height = pt.cy() - element.cy();
       let radius = Math.sqrt(width * width + height * height)
       element.radius(radius)
+      this.getCirclePosition(element, properties)
     })
   }
 
@@ -573,7 +564,7 @@ export class EditorComponent implements OnInit, AfterViewInit {
       case "polyline" :
       case "polygon" :
         // @ts-ignore
-        this.editPoints(entity.$element, entity.properties)
+        this.editLine(entity.$element, entity.properties)
         break
       case "path" :
       default:

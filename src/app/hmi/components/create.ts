@@ -16,7 +16,7 @@ import {HmiComponent} from "../hmi";
 export function CreateElement(container: Container, component: HmiComponent): ElementAlias {
   let element: ElementAlias
   const type = component.type || "svg"
-  switch (component.type) {
+  switch (type) {
     case "rect" :
       element = new Rect() // container.rect();
       break;
