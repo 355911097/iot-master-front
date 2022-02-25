@@ -65,7 +65,6 @@
     <nz-divider nzType="vertical"></nz-divider>
 
     边框
-    <input class="color" [(colorPicker)]="stroke.color" [style.background]="stroke.color"/>
 <!--    <a (click)="stroke.color='none'">无边框</a>-->
     <nz-select [(ngModel)]="stroke.width">
       <nz-option [nzValue]="0" nzLabel="无"></nz-option>
@@ -75,6 +74,7 @@
       <nz-option [nzValue]="4" nzLabel="4px"></nz-option>
       <nz-option [nzValue]="5" nzLabel="5px"></nz-option>
     </nz-select>
+    <input class="color" *ngIf="stroke.width > 0" [(colorPicker)]="stroke.color" [style.background]="stroke.color"/>
 
   </nz-footer>
 </nz-layout>
