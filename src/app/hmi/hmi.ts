@@ -3,7 +3,7 @@ import {ElementAlias} from "@svgdotjs/svg.js";
 export interface HmiPropertyItem {
   label: string
   name: string
-  type: string | 'switch' | 'number' | 'text' | 'color' | 'date' | 'time' | 'datetime' | 'font' | 'fontsize'
+  type: string | 'boolean' | 'number' | 'text' | 'color' | 'date' | 'time' | 'datetime' | 'font' | 'fontsize'
   unit?: string
   min?: number
   max?: number

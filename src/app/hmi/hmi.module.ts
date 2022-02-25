@@ -12,6 +12,8 @@ import {NzTableModule} from "ng-zorro-antd/table";
 import {ColorPickerModule} from "ngx-color-picker";
 import {NzSelectModule} from "ng-zorro-antd/select";
 import {FormsModule} from "@angular/forms";
+import {NzInputModule} from "ng-zorro-antd/input";
+import {NzSwitchModule} from "ng-zorro-antd/switch";
 
 
 
@@ -32,6 +34,8 @@ import {FormsModule} from "@angular/forms";
     IconsProviderModule,
     ColorPickerModule,
     NzSelectModule,
+    NzInputModule,
+    NzSwitchModule,
   ]
 })
 export class HmiModule { }
